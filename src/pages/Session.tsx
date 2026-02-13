@@ -1,12 +1,13 @@
 import { useState, useCallback, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Mic, MicOff, MessageSquare, X, Send, Keyboard } from "lucide-react";
-import { streamWonderChat, playWonderTTS } from "@/lib/wonder-api";
+import { streamWonderChat, playWonderTTS, generateSessionSummary, type SessionSummary } from "@/lib/wonder-api";
 import { useSpeechRecognition } from "@/hooks/use-speech-recognition";
 import { toast } from "sonner";
 
 type ConversationState = "idle" | "listening" | "processing" | "speaking";
+type SessionPhase = "active" | "summarizing" | "summary";
 type Msg = { role: "user" | "assistant"; content: string };
 
 const orbClasses: Record<ConversationState, string> = {
@@ -33,6 +34,8 @@ const Session = () => {
   const [showTextInput, setShowTextInput] = useState(false);
   const [textInput, setTextInput] = useState("");
   const [messages, setMessages] = useState<Msg[]>([]);
+  const [sessionPhase, setSessionPhase] = useState<SessionPhase>("active");
+  const [summary, setSummary] = useState<SessionSummary | null>(null);
   const isProcessingRef = useRef(false);
 
   const sendToAI = useCallback(
@@ -115,12 +118,107 @@ const Session = () => {
     sendToAI(text);
   };
 
-  const handleEndSession = () => {
-    navigate("/");
+  const handleEndSession = async () => {
+    if (messages.length < 2) {
+      navigate("/");
+      return;
+    }
+    setSessionPhase("summarizing");
+    try {
+      const result = await generateSessionSummary(messages);
+      setSummary(result);
+      setSessionPhase("summary");
+    } catch (e) {
+      console.error("Summary error:", e);
+      // Fallback — still show a generic summary
+      setSummary({
+        arrived: "with something on your mind",
+        leaving: "a little more seen",
+        reflection: "Sometimes just showing up is the wonder.",
+      });
+      setSessionPhase("summary");
+    }
   };
 
   return (
     <div className="min-h-screen bg-wonder-navy flex flex-col items-center justify-between relative overflow-hidden">
+      <AnimatePresence mode="wait">
+        {/* Summary screen */}
+        {(sessionPhase === "summarizing" || sessionPhase === "summary") && (
+          <motion.div
+            key="summary"
+            className="absolute inset-0 z-30 bg-wonder-navy flex flex-col items-center justify-center px-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            {sessionPhase === "summarizing" ? (
+              <motion.div
+                className="flex flex-col items-center gap-6"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-wonder-purple/60 via-wonder-teal/40 to-wonder-sky/30 animate-orb-breathe" />
+                <p className="text-wonder-purple/70 font-body text-sm">Reflecting on your session...</p>
+              </motion.div>
+            ) : summary && (
+              <motion.div
+                className="flex flex-col items-center gap-10 max-w-lg text-center"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <div className="flex flex-col gap-8 w-full">
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    <p className="text-wonder-teal/50 font-body text-xs uppercase tracking-widest mb-2">You arrived</p>
+                    <p className="text-wonder-teal font-display text-2xl md:text-3xl italic">{summary.arrived}</p>
+                  </motion.div>
+
+                  <motion.div
+                    className="w-16 h-px bg-gradient-to-r from-transparent via-wonder-purple/40 to-transparent mx-auto"
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
+                    transition={{ delay: 0.6, duration: 0.5 }}
+                  />
+
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.8 }}
+                  >
+                    <p className="text-wonder-coral/50 font-body text-xs uppercase tracking-widest mb-2">You're leaving with</p>
+                    <p className="text-wonder-coral font-display text-2xl md:text-3xl italic">{summary.leaving}</p>
+                  </motion.div>
+                </div>
+
+                <motion.p
+                  className="text-wonder-purple/60 font-body text-sm md:text-base max-w-sm leading-relaxed"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.2 }}
+                >
+                  {summary.reflection}
+                </motion.p>
+
+                <motion.button
+                  onClick={() => navigate("/")}
+                  className="mt-4 px-8 py-3 rounded-full bg-wonder-purple/20 text-wonder-purple font-body text-sm hover:bg-wonder-purple/30 transition-colors"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.6 }}
+                >
+                  Go well
+                </motion.button>
+              </motion.div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Top bar */}
       <motion.div
         className="w-full flex justify-between items-center px-6 py-4 z-10"
