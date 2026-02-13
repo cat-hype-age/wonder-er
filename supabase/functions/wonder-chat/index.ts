@@ -72,11 +72,17 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, mode } = await req.json();
+    const { messages, mode, generateSummary } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const systemContent = WONDER_SYSTEM_PROMPT + `\n\nCurrent mode: ${mode || "reflection"}`;
+    let systemContent = WONDER_SYSTEM_PROMPT + `\n\nCurrent mode: ${mode || "reflection"}`;
+
+    if (generateSummary) {
+      systemContent = `You are a wonder companion. Given the conversation below, generate a brief closing summary in EXACTLY this JSON format (no markdown, no code fences):
+{"arrived":"one short phrase describing how the person arrived","leaving":"one short phrase describing what they're leaving with","reflection":"one poetic sentence capturing the session"}
+Be warm, precise, and specific to what was actually discussed. No generic platitudes.`;
+    }
 
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
@@ -92,7 +98,7 @@ serve(async (req) => {
             { role: "system", content: systemContent },
             ...messages,
           ],
-          stream: true,
+          stream: !generateSummary,
         }),
       }
     );
@@ -116,6 +122,14 @@ serve(async (req) => {
         JSON.stringify({ error: "AI gateway error" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
+    }
+
+    if (generateSummary) {
+      const data = await response.json();
+      const content = data.choices?.[0]?.message?.content || "{}";
+      return new Response(content, {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     return new Response(response.body, {

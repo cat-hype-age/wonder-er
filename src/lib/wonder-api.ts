@@ -85,6 +85,7 @@ export async function streamWonderChat({
 }
 
 export async function playWonderTTS(text: string, voiceId?: string): Promise<void> {
+  // ... keep existing code
   const response = await fetch(TTS_URL, {
     method: "POST",
     headers: {
@@ -114,4 +115,31 @@ export async function playWonderTTS(text: string, voiceId?: string): Promise<voi
     };
     audio.play().catch(reject);
   });
+}
+
+export type SessionSummary = {
+  arrived: string;
+  leaving: string;
+  reflection: string;
+};
+
+export async function generateSessionSummary(messages: Msg[]): Promise<SessionSummary> {
+  const resp = await fetch(CHAT_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+    },
+    body: JSON.stringify({ messages, mode: "reflection", generateSummary: true }),
+  });
+
+  if (!resp.ok) {
+    throw new Error(`Summary failed: ${resp.status}`);
+  }
+
+  const text = await resp.text();
+  // Extract JSON from possible markdown fences
+  const jsonMatch = text.match(/\{[\s\S]*?\}/);
+  if (!jsonMatch) throw new Error("Invalid summary format");
+  return JSON.parse(jsonMatch[0]);
 }
