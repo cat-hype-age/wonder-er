@@ -13,6 +13,14 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        display: ['"Playfair Display"', 'serif'],
+        body: ['"Space Grotesk"', 'sans-serif'],
+        arabic: ['"Noto Sans Arabic"', 'sans-serif'],
+        japanese: ['"Noto Sans JP"', 'sans-serif'],
+        korean: ['"Noto Sans KR"', 'sans-serif'],
+        chinese: ['"Noto Sans SC"', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -47,6 +55,16 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        wonder: {
+          coral: "hsl(var(--wonder-coral))",
+          teal: "hsl(var(--wonder-teal))",
+          gold: "hsl(var(--wonder-gold))",
+          purple: "hsl(var(--wonder-purple))",
+          sky: "hsl(var(--wonder-sky))",
+          warm: "hsl(var(--wonder-warm))",
+          navy: "hsl(var(--wonder-navy))",
+          "navy-light": "hsl(var(--wonder-navy-light))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -65,20 +83,12 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
         },
       },
       animation: {
