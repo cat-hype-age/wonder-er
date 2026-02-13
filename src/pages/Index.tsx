@@ -26,22 +26,24 @@ const wowWords = [
   { text: "واو", color: "text-wonder-gold", font: "font-arabic font-bold", size: "text-5xl md:text-7xl", delay: 0.2 },
   { text: "すごい", color: "text-wonder-teal", font: "font-japanese font-bold", size: "text-4xl md:text-6xl", delay: 0.4 },
   { text: "¡Guau!", color: "text-wonder-purple", font: "font-display italic font-bold", size: "text-5xl md:text-7xl", delay: 0.6 },
-  { text: "Вау", color: "text-wonder-sky", font: "font-body font-bold", size: "text-5xl md:text-7xl", delay: 0.3 },
+  { text: "वाह", color: "text-wonder-sky", font: "font-body font-bold", size: "text-5xl md:text-7xl", delay: 0.3 },
   { text: "哇", color: "text-wonder-warm", font: "font-chinese font-bold", size: "text-6xl md:text-8xl", delay: 0.5 },
   { text: "와!", color: "text-wonder-coral", font: "font-korean font-bold", size: "text-4xl md:text-6xl", delay: 0.7 },
-  { text: "Uau!", color: "text-wonder-gold", font: "font-display italic font-bold", size: "text-5xl md:text-6xl", delay: 0.1 },
+  { text: "Ajabu!", color: "text-wonder-gold", font: "font-display italic font-bold", size: "text-5xl md:text-6xl", delay: 0.1 },
+  { text: "ว้าว", color: "text-wonder-teal", font: "font-body font-bold", size: "text-4xl md:text-6xl", delay: 0.35 },
+  { text: "Uau!", color: "text-wonder-purple", font: "font-display italic font-bold", size: "text-5xl md:text-6xl", delay: 0.55 },
 ];
 
-// Positions for the collage grid — organic, non-uniform
+// Positions for the collage grid — organic, non-uniform (5 cols x 4 rows)
 const portraitPositions = [
   "col-start-1 row-start-1",
   "col-start-3 row-start-1",
+  "col-start-5 row-start-1",
   "col-start-2 row-start-2",
   "col-start-4 row-start-2",
   "col-start-1 row-start-3",
   "col-start-3 row-start-3",
-  "col-start-2 row-start-4",
-  "col-start-4 row-start-4",
+  "col-start-5 row-start-3",
 ];
 
 const wowPositions = [
@@ -49,10 +51,12 @@ const wowPositions = [
   "col-start-4 row-start-1 self-end justify-self-start",
   "col-start-1 row-start-2 self-start justify-self-end",
   "col-start-3 row-start-2 self-center justify-self-center",
-  "col-start-2 row-start-3 self-end justify-self-start",
-  "col-start-4 row-start-3 self-start justify-self-center",
-  "col-start-1 row-start-4 self-center justify-self-center",
-  "col-start-3 row-start-4 self-end justify-self-end",
+  "col-start-5 row-start-2 self-end justify-self-start",
+  "col-start-2 row-start-3 self-start justify-self-center",
+  "col-start-4 row-start-3 self-center justify-self-center",
+  "col-start-1 row-start-1 self-end justify-self-start",
+  "col-start-3 row-start-3 self-end justify-self-end",
+  "col-start-5 row-start-3 self-start justify-self-end",
 ];
 
 const Index = () => {
@@ -68,7 +72,7 @@ const Index = () => {
       <main className="relative min-h-screen flex flex-col">
         {/* Collage area */}
         <div className="flex-1 relative px-4 pt-8 pb-4 md:px-8">
-          <div className="grid grid-cols-4 grid-rows-4 gap-3 md:gap-5 max-w-5xl mx-auto h-full min-h-[60vh]">
+          <div className="grid grid-cols-5 grid-rows-3 gap-4 md:gap-6 max-w-6xl mx-auto h-full min-h-[55vh]">
             {/* Portraits */}
             {portraits.map((p, i) => (
               <motion.div
@@ -81,9 +85,9 @@ const Index = () => {
                 <motion.img
                   src={p.src}
                   alt={p.alt}
-                  className={`w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 object-cover shadow-xl ${p.style}`}
-                  animate={{ y: [0, i % 2 === 0 ? -8 : -12, 0] }}
-                  transition={{ duration: 3 + i * 0.5, repeat: Infinity, ease: "easeInOut" }}
+                  className={`w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 lg:w-48 lg:h-48 object-cover shadow-xl ${p.style}`}
+                  animate={{ y: [0, i % 2 === 0 ? -6 : -10, 0] }}
+                  transition={{ duration: 5 + i * 0.6, repeat: Infinity, ease: "easeInOut" }}
                 />
               </motion.div>
             ))}
@@ -95,10 +99,10 @@ const Index = () => {
                 className={`${wowPositions[i]} ${w.color} ${w.font} ${w.size} select-none pointer-events-none z-10`}
                 style={{ ["--rotate" as string]: `${(i % 2 === 0 ? 1 : -1) * (3 + i * 2)}deg` }}
                 initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: [0.7, 1, 0.7], scale: 1 }}
+                animate={{ opacity: [0.6, 1, 0.6], scale: 1 }}
                 transition={{
-                  opacity: { delay: w.delay + 0.5, duration: 3, repeat: Infinity, ease: "easeInOut" },
-                  scale: { delay: w.delay, duration: 0.5, ease: "backOut" },
+                  opacity: { delay: w.delay + 0.5, duration: 5, repeat: Infinity, ease: "easeInOut" },
+                  scale: { delay: w.delay, duration: 0.7, ease: "backOut" },
                 }}
               >
                 {w.text}
