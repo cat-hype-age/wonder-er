@@ -141,7 +141,7 @@ const Session = () => {
   };
 
   return (
-    <div className="min-h-screen bg-wonder-navy flex flex-col items-center justify-between relative overflow-hidden">
+    <div className="min-h-screen min-h-[100dvh] bg-wonder-navy flex flex-col items-center justify-between relative overflow-hidden safe-top safe-bottom">
       <AnimatePresence mode="wait">
         {/* Summary screen */}
         {(sessionPhase === "summarizing" || sessionPhase === "summary") && (
