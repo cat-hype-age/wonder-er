@@ -63,7 +63,7 @@ const Index = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background overflow-hidden relative">
+    <div className="min-h-screen min-h-[100dvh] bg-background overflow-hidden relative safe-top safe-bottom">
       {/* SEO */}
       <header className="sr-only">
         <h1>Wonder Companion — Find Awe in Your Daily Life</h1>
