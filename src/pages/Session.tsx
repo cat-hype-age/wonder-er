@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Mic, MicOff, MessageSquare, X, Send } from "lucide-react";
+import { Mic, MicOff, MessageSquare, X, Send, Keyboard } from "lucide-react";
+import { streamWonderChat, playWonderTTS } from "@/lib/wonder-api";
+import { useSpeechRecognition } from "@/hooks/use-speech-recognition";
+import { toast } from "sonner";
 
 type ConversationState = "idle" | "listening" | "processing" | "speaking";
+type Msg = { role: "user" | "assistant"; content: string };
 
 const orbClasses: Record<ConversationState, string> = {
   idle: "animate-orb-breathe",
@@ -28,30 +32,87 @@ const Session = () => {
   const [showTranscript, setShowTranscript] = useState(false);
   const [showTextInput, setShowTextInput] = useState(false);
   const [textInput, setTextInput] = useState("");
-  const [transcript, setTranscript] = useState<{ role: string; content: string }[]>([]);
+  const [messages, setMessages] = useState<Msg[]>([]);
+  const isProcessingRef = useRef(false);
+
+  const sendToAI = useCallback(
+    async (userText: string) => {
+      if (isProcessingRef.current) return;
+      isProcessingRef.current = true;
+
+      const userMsg: Msg = { role: "user", content: userText };
+      const updatedMessages = [...messages, userMsg];
+      setMessages(updatedMessages);
+      setConversationState("processing");
+
+      let assistantText = "";
+
+      try {
+        await streamWonderChat({
+          messages: updatedMessages,
+          mode,
+          onDelta: (chunk) => {
+            assistantText += chunk;
+            setMessages((prev) => {
+              const last = prev[prev.length - 1];
+              if (last?.role === "assistant") {
+                return prev.map((m, i) =>
+                  i === prev.length - 1 ? { ...m, content: assistantText } : m
+                );
+              }
+              return [...prev, { role: "assistant", content: assistantText }];
+            });
+          },
+          onDone: () => {},
+        });
+
+        // Play TTS
+        if (assistantText) {
+          setConversationState("speaking");
+          try {
+            await playWonderTTS(assistantText);
+          } catch (e) {
+            console.error("TTS error:", e);
+            // TTS failure is non-fatal — user can still read transcript
+          }
+        }
+      } catch (e: any) {
+        console.error("AI error:", e);
+        toast.error(e.message || "Something went wrong. Let's try again.");
+      } finally {
+        setConversationState("idle");
+        isProcessingRef.current = false;
+      }
+    },
+    [messages, mode]
+  );
+
+  const { isListening, start: startListening, stop: stopListening } = useSpeechRecognition({
+    onResult: (transcript) => {
+      sendToAI(transcript);
+    },
+    onEnd: () => {
+      if (conversationState === "listening") {
+        setConversationState("idle");
+      }
+    },
+  });
 
   const handleMicToggle = () => {
-    if (conversationState === "listening") {
+    if (isListening) {
+      stopListening();
       setConversationState("idle");
     } else {
       setConversationState("listening");
-      // Web Speech API will be wired here
+      startListening();
     }
   };
 
   const handleSendText = () => {
     if (!textInput.trim()) return;
-    setTranscript((prev) => [...prev, { role: "user", content: textInput }]);
+    const text = textInput.trim();
     setTextInput("");
-    setConversationState("processing");
-    // AI call will be wired here
-    setTimeout(() => {
-      setTranscript((prev) => [
-        ...prev,
-        { role: "assistant", content: "I hear you. Tell me more about what you're noticing." },
-      ]);
-      setConversationState("idle");
-    }, 2000);
+    sendToAI(text);
   };
 
   const handleEndSession = () => {
@@ -85,13 +146,13 @@ const Session = () => {
       </motion.div>
 
       {/* Transcript overlay */}
-      {showTranscript && transcript.length > 0 && (
+      {showTranscript && messages.length > 0 && (
         <motion.div
           className="absolute top-16 left-4 right-4 md:left-auto md:right-8 md:w-96 max-h-[40vh] overflow-y-auto bg-wonder-navy-light/90 backdrop-blur-lg rounded-2xl p-4 z-20 border border-wonder-purple/20"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          {transcript.map((msg, i) => (
+          {messages.map((msg, i) => (
             <div key={i} className={`mb-3 ${msg.role === "user" ? "text-right" : "text-left"}`}>
               <span
                 className={`inline-block px-3 py-2 rounded-2xl text-sm font-body ${
@@ -115,11 +176,9 @@ const Session = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, ease: "easeOut" }}
         >
-          {/* Outer glow */}
           <div
             className={`w-48 h-48 md:w-64 md:h-64 rounded-full bg-gradient-to-br from-wonder-purple/40 via-wonder-teal/30 to-wonder-coral/20 blur-xl absolute inset-0 ${orbClasses[conversationState]}`}
           />
-          {/* Inner orb */}
           <div
             className={`w-48 h-48 md:w-64 md:h-64 rounded-full bg-gradient-to-br from-wonder-purple/60 via-wonder-teal/40 to-wonder-sky/30 backdrop-blur-sm relative z-10 flex items-center justify-center ${orbClasses[conversationState]}`}
           >
@@ -127,7 +186,6 @@ const Session = () => {
           </div>
         </motion.div>
 
-        {/* State label */}
         <motion.p
           className="text-wonder-purple/70 font-body text-sm tracking-wide"
           initial={{ opacity: 0 }}
@@ -137,8 +195,7 @@ const Session = () => {
           {stateLabels[conversationState]}
         </motion.p>
 
-        {/* Welcome text for idle state */}
-        {conversationState === "idle" && transcript.length === 0 && (
+        {conversationState === "idle" && messages.length === 0 && (
           <motion.p
             className="text-wonder-teal/80 font-display text-xl md:text-2xl text-center max-w-md px-4"
             initial={{ opacity: 0, y: 10 }}
@@ -159,7 +216,6 @@ const Session = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8 }}
       >
-        {/* Text input */}
         {showTextInput && (
           <div className="flex items-center gap-2 w-full max-w-md">
             <input
@@ -172,7 +228,8 @@ const Session = () => {
             />
             <button
               onClick={handleSendText}
-              className="w-10 h-10 rounded-full bg-wonder-teal/20 flex items-center justify-center text-wonder-teal hover:bg-wonder-teal/30 transition-colors"
+              disabled={conversationState === "processing" || conversationState === "speaking"}
+              className="w-10 h-10 rounded-full bg-wonder-teal/20 flex items-center justify-center text-wonder-teal hover:bg-wonder-teal/30 transition-colors disabled:opacity-40"
             >
               <Send size={16} />
             </button>
@@ -184,21 +241,22 @@ const Session = () => {
             onClick={() => setShowTextInput(!showTextInput)}
             className="text-wonder-purple/40 hover:text-wonder-purple/70 transition-colors"
           >
-            <MessageSquare size={20} />
+            <Keyboard size={20} />
           </button>
 
           <button
             onClick={handleMicToggle}
-            className={`w-16 h-16 rounded-full flex items-center justify-center transition-all shadow-lg ${
-              conversationState === "listening"
+            disabled={conversationState === "processing" || conversationState === "speaking"}
+            className={`w-16 h-16 rounded-full flex items-center justify-center transition-all shadow-lg disabled:opacity-40 ${
+              isListening
                 ? "bg-wonder-coral text-wonder-navy scale-110"
                 : "bg-wonder-purple/30 text-wonder-purple hover:bg-wonder-purple/40"
             }`}
           >
-            {conversationState === "listening" ? <MicOff size={24} /> : <Mic size={24} />}
+            {isListening ? <MicOff size={24} /> : <Mic size={24} />}
           </button>
 
-          <div className="w-5" /> {/* Spacer for balance */}
+          <div className="w-5" />
         </div>
       </motion.div>
     </div>

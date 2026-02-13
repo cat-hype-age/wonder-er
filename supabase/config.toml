@@ -1,1 +1,7 @@
 project_id = "rqgxjpyirxnanciwhcbz"
+
+[functions.wonder-chat]
+verify_jwt = false
+
+[functions.wonder-tts]
+verify_jwt = false
