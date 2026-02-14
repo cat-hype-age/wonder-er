@@ -5,11 +5,8 @@ import { ArrowLeft, Volume2, ChevronDown } from "lucide-react";
 
 const VOICES = [
   { id: "EXAVITQu4vr4xnSDxMaL", name: "Sarah", description: "Warm & calm" },
-  { id: "CwhRBWXzGAHq8TQ4Fs17", name: "Roger", description: "Deep & grounded" },
-  { id: "FGY2WhTYpPnrIDTdsKH5", name: "Laura", description: "Gentle & clear" },
-  { id: "JBFqnCBsd6RMkjVDRZzb", name: "George", description: "Rich & resonant" },
+  { id: "Xb7hH8MSUJpSbSDYk0k2", name: "Alice", description: "Bright & clear" },
   { id: "pFZP5JQG7iQjIQuC4Bku", name: "Lily", description: "Soft & soothing" },
-  { id: "TX3LPaxmHKxFdv7VOQHJ", name: "Liam", description: "Friendly & bright" },
 ];
 
 const Settings = () => {
@@ -163,10 +160,14 @@ const Settings = () => {
                   <span className="text-wonder-gold mt-0.5">·</span>
                   <span>Presence over performance</span>
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-wonder-purple mt-0.5">·</span>
-                  <span>Questions over answers</span>
-                </li>
+                 <li className="flex items-start gap-2">
+<span className="text-wonder-purple mt-0.5">·</span>
+                   <span>Wonder over interrogation — alternate between asking and offering</span>
+                 </li>
+                 <li className="flex items-start gap-2">
+                   <span className="text-wonder-coral/70 mt-0.5">·</span>
+                   <span>Surprise is a doorway to wonder</span>
+                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-wonder-teal mt-0.5">·</span>
                   <span>Brevity over elaboration</span>
