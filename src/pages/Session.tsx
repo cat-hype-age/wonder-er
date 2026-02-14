@@ -381,7 +381,9 @@ const Session = () => {
       )}
 
       {/* Central orb */}
-      <div className="flex-1 flex flex-col items-center justify-center gap-8">
+      <div className="flex-1 flex flex-col items-center justify-center gap-8 relative">
+        {/* Warm radial glow echoing landing page warmth */}
+        <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 50% 45%, hsl(42 90% 58% / 0.06) 0%, hsl(350 72% 55% / 0.03) 40%, transparent 70%)' }} />
         <motion.div
           className="relative"
           initial={{ opacity: 0, scale: 0.5 }}

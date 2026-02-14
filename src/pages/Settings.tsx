@@ -43,6 +43,9 @@ const Settings = () => {
 
   return (
     <div className="min-h-screen min-h-[100dvh] bg-wonder-navy safe-top safe-bottom">
+      {/* Warm accent line bridging landing page warmth */}
+      <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-wonder-coral/30 to-transparent" />
+
       {/* Header */}
       <motion.div
         className="flex items-center gap-4 px-6 py-5"
@@ -160,14 +163,14 @@ const Settings = () => {
                   <span className="text-wonder-gold mt-0.5">·</span>
                   <span>Presence over performance</span>
                 </li>
-                 <li className="flex items-start gap-2">
-<span className="text-wonder-purple mt-0.5">·</span>
-                   <span>Wonder over interrogation — alternate between asking and offering</span>
-                 </li>
-                 <li className="flex items-start gap-2">
-                   <span className="text-wonder-coral/70 mt-0.5">·</span>
-                   <span>Surprise is a doorway to wonder</span>
-                 </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-wonder-purple mt-0.5">·</span>
+                  <span>Wonder over interrogation — alternate between asking and offering</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-wonder-coral/70 mt-0.5">·</span>
+                  <span>Surprise is a doorway to wonder</span>
+                </li>
                 <li className="flex items-start gap-2">
                   <span className="text-wonder-teal mt-0.5">·</span>
                   <span>Brevity over elaboration</span>

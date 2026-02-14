@@ -112,6 +112,9 @@ const Index = () => {
           </div>
         </div>
 
+        {/* Bottom gradient foreshadowing session environment */}
+        <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-wonder-navy/8 via-wonder-purple/3 to-transparent pointer-events-none z-10" />
+
         {/* Entry points */}
         <motion.div
           className="relative z-20 px-6 py-10 md:py-14 flex flex-col items-center gap-6"
@@ -126,25 +129,25 @@ const Index = () => {
           <div className="flex flex-col sm:flex-row gap-4">
             <button
               onClick={() => navigate("/session?mode=reflection")}
-              className="px-8 py-4 rounded-full bg-primary text-primary-foreground font-body font-semibold text-lg shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-[0.98]"
+              className="px-8 py-4 rounded-full bg-wonder-coral text-white font-body font-semibold text-lg shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-[0.98]"
             >
               Check in with yourself
             </button>
             <button
               onClick={() => navigate("/session?mode=partnership")}
-              className="px-8 py-4 rounded-full bg-secondary text-secondary-foreground font-body font-semibold text-lg shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-[0.98]"
+              className="px-8 py-4 rounded-full bg-wonder-teal text-white font-body font-semibold text-lg shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-[0.98]"
             >
               Work through something
             </button>
           </div>
 
           <div className="flex items-center gap-4 mt-2">
-            <p className="text-muted-foreground/60 text-sm font-body">
+            <p className="text-wonder-purple/50 text-sm font-body">
               No account needed. Just begin.
             </p>
             <button
               onClick={() => navigate("/settings")}
-              className="text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors"
+              className="text-wonder-purple/30 hover:text-wonder-purple/60 transition-colors"
               aria-label="Settings"
             >
               <Settings size={18} />
