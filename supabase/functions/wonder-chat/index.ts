@@ -198,7 +198,7 @@ Be warm, precise, and specific to what was actually discussed. No generic platit
   } catch (e) {
     console.error("wonder-chat error:", e);
     return new Response(
-      JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }),
+      JSON.stringify({ error: "An error occurred. Please try again." }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

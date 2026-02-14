@@ -44,7 +44,7 @@ serve(async (req) => {
       const errorText = await response.text();
       console.error("ElevenLabs error:", response.status, errorText);
       return new Response(
-        JSON.stringify({ error: `TTS failed: ${response.status}` }),
+        JSON.stringify({ error: "Voice generation failed. Please try again." }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -59,7 +59,7 @@ serve(async (req) => {
   } catch (e) {
     console.error("wonder-tts error:", e);
     return new Response(
-      JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }),
+      JSON.stringify({ error: "An error occurred. Please try again." }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

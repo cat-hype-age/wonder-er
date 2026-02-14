@@ -56,7 +56,7 @@ serve(async (req) => {
       }
       const t = await imageResponse.text();
       console.error("Image generation error:", imageResponse.status, t);
-      throw new Error(`Image generation failed: ${imageResponse.status}`);
+      throw new Error("Image generation failed");
     }
 
     const imageData = await imageResponse.json();
@@ -99,7 +99,7 @@ serve(async (req) => {
   } catch (e) {
     console.error("wonder-image error:", e);
     return new Response(
-      JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error", imageUrl: null }),
+      JSON.stringify({ error: "An error occurred. Please try again.", imageUrl: null }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

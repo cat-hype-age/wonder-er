@@ -38,7 +38,7 @@ serve(async (req) => {
       const errorText = await response.text();
       console.error("ElevenLabs SFX error:", response.status, errorText);
       return new Response(
-        JSON.stringify({ error: `SFX generation failed: ${response.status}` }),
+        JSON.stringify({ error: "Sound generation failed. Please try again." }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -52,7 +52,7 @@ serve(async (req) => {
   } catch (e) {
     console.error("wonder-sfx error:", e);
     return new Response(
-      JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }),
+      JSON.stringify({ error: "An error occurred. Please try again." }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
