@@ -68,7 +68,7 @@ serve(async (req) => {
     if (!promptResponse.ok) {
       const t = await promptResponse.text();
       console.error("Prompt generation error:", promptResponse.status, t);
-      throw new Error(`Prompt generation failed: ${promptResponse.status}`);
+      throw new Error("Visual generation failed");
     }
 
     const promptData = await promptResponse.json();
@@ -105,7 +105,7 @@ serve(async (req) => {
 
     if (!imageResponse.ok) {
       const t = await imageResponse.text();
-      console.error("Image generation error:", imageResponse.status, t);
+      console.error("Visual image generation error:", imageResponse.status, t);
       // Return just the soundscape prompt if image fails
       return new Response(
         JSON.stringify({ imageBase64: null, soundscapePrompt }),
@@ -152,7 +152,7 @@ serve(async (req) => {
     console.error("wonder-visuals error:", e);
     return new Response(
       JSON.stringify({
-        error: e instanceof Error ? e.message : "Unknown error",
+        error: "An error occurred. Please try again.",
         imageBase64: null,
         soundscapePrompt: null,
       }),
