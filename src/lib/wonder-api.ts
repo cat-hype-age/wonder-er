@@ -4,6 +4,43 @@ const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/wonder-chat`
 const TTS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/wonder-tts`;
 const VISUALS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/wonder-visuals`;
 const SFX_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/wonder-sfx`;
+const IMAGE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/wonder-image`;
+
+// Parse [WONDER_IMAGE: prompt] markers from AI responses
+const WONDER_IMAGE_REGEX = /\[WONDER_IMAGE:\s*(.+?)\]/g;
+
+export function parseWonderImages(text: string): { cleanText: string; imagePrompts: string[] } {
+  const imagePrompts: string[] = [];
+  const cleanText = text.replace(WONDER_IMAGE_REGEX, (_, prompt) => {
+    imagePrompts.push(prompt.trim());
+    return '';
+  }).trim();
+  return { cleanText, imagePrompts };
+}
+
+export async function generateWonderImage(prompt: string): Promise<string | null> {
+  try {
+    const resp = await fetch(IMAGE_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+      },
+      body: JSON.stringify({ prompt }),
+    });
+
+    if (!resp.ok) {
+      console.error("Wonder image generation failed:", resp.status);
+      return null;
+    }
+
+    const data = await resp.json();
+    return data.imageUrl || null;
+  } catch (e) {
+    console.error("Wonder image error:", e);
+    return null;
+  }
+}
 
 export async function streamWonderChat({
   messages,
@@ -87,7 +124,6 @@ export async function streamWonderChat({
 }
 
 export async function playWonderTTS(text: string, voiceId?: string): Promise<void> {
-  // ... keep existing code
   const response = await fetch(TTS_URL, {
     method: "POST",
     headers: {

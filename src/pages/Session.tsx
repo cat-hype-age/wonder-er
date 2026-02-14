@@ -2,7 +2,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mic, MicOff, MessageSquare, X, Send, Eye, EyeOff, Volume2, VolumeX, BookOpen } from "lucide-react";
-import { streamWonderChat, playWonderTTS, generateSessionSummary, type SessionSummary } from "@/lib/wonder-api";
+import { streamWonderChat, playWonderTTS, generateSessionSummary, parseWonderImages, generateWonderImage, type SessionSummary } from "@/lib/wonder-api";
 import { useSpeechRecognition } from "@/hooks/use-speech-recognition";
 import { useWonderVisuals } from "@/hooks/use-wonder-visuals";
 import WonderBackground from "@/components/WonderBackground";
@@ -12,6 +12,7 @@ import { toast } from "sonner";
 type ConversationState = "idle" | "listening" | "processing" | "speaking";
 type SessionPhase = "active" | "summarizing" | "summary";
 type Msg = { role: "user" | "assistant"; content: string };
+type WonderImageEntry = { msgIndex: number; url: string };
 
 const orbClasses: Record<ConversationState, string> = {
   idle: "animate-orb-breathe",
@@ -39,6 +40,7 @@ const Session = () => {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [sessionPhase, setSessionPhase] = useState<SessionPhase>("active");
   const [summary, setSummary] = useState<SessionSummary | null>(null);
+  const [wonderImages, setWonderImages] = useState<WonderImageEntry[]>([]);
   const isProcessingRef = useRef(false);
 
   const {
@@ -145,13 +147,36 @@ const Session = () => {
           onDone: () => {},
         });
 
-        // Play TTS and generate visuals in parallel
+        // Parse for image markers and clean text
         if (assistantText) {
+          const { cleanText, imagePrompts } = parseWonderImages(assistantText);
+          
+          // Update the message with cleaned text (without image markers)
+          if (cleanText !== assistantText) {
+            setMessages((prev) =>
+              prev.map((m, i) =>
+                i === prev.length - 1 && m.role === "assistant" ? { ...m, content: cleanText } : m
+              )
+            );
+            assistantText = cleanText;
+          }
+
           setConversationState("speaking");
           const finalMessages = [...updatedMessages, { role: "assistant" as const, content: assistantText }];
           
           // Start visual generation in parallel (non-blocking)
           generateVisuals(finalMessages);
+
+          // Generate wonder images in parallel (non-blocking)
+          if (imagePrompts.length > 0) {
+            const msgIndex = updatedMessages.length; // index of the assistant message
+            imagePrompts.forEach(async (prompt) => {
+              const url = await generateWonderImage(prompt);
+              if (url) {
+                setWonderImages((prev) => [...prev, { msgIndex, url }]);
+              }
+            });
+          }
 
           try {
             const voiceId = localStorage.getItem("wonder-voice") || undefined;
@@ -398,8 +423,23 @@ const Session = () => {
                 <p className={`font-display text-xl md:text-2xl leading-[1.6] tracking-wide ${
                   msg.role === "assistant" ? "text-wonder-teal/90 italic" : "text-wonder-teal"
                 }`}>
-                  {msg.content}
+                  {msg.role === "assistant" ? parseWonderImages(msg.content).cleanText : msg.content}
                 </p>
+                {/* Inline wonder images */}
+                {msg.role === "assistant" && wonderImages
+                  .filter((wi) => wi.msgIndex === i)
+                  .map((wi, j) => (
+                    <motion.div
+                      key={j}
+                      className="mt-6 rounded-2xl overflow-hidden border border-wonder-purple/20"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.6 }}
+                    >
+                      <img src={wi.url} alt="Wonder image" className="w-full h-auto" />
+                    </motion.div>
+                  ))
+                }
               </div>
             </motion.div>
           ))}
