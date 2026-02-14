@@ -126,12 +126,12 @@ const Settings = () => {
         <section>
           <h2 className="text-wonder-purple font-display text-lg mb-1">About</h2>
           <p className="text-wonder-purple/50 font-body text-sm mb-4">
-            The Wonder Framework
+            The Wonder-er Framework
           </p>
 
           <div className="bg-wonder-navy-light/60 rounded-2xl p-5 border border-wonder-purple/10 flex flex-col gap-4">
             <p className="text-wonder-teal/70 font-body text-sm leading-relaxed">
-              Wonder is a daily practice for finding awe in the ordinary. It's not therapy, not coaching, not productivity — it's a space to notice what's alive in you and around you.
+              Wonder-er is a daily practice for finding awe in the ordinary. It's not therapy, not coaching, not productivity — it's a space to notice what's alive in you and around you.
             </p>
 
             <div className="w-full h-px bg-wonder-purple/10" />
@@ -145,13 +145,13 @@ const Settings = () => {
               className="flex items-center justify-center gap-2 mt-2 px-5 py-3 rounded-xl bg-wonder-purple/15 text-wonder-purple font-body text-sm font-medium hover:bg-wonder-purple/25 transition-colors border border-wonder-purple/20"
             >
               <BookOpen size={16} />
-              Read the full Wonder Framework
+              Read the full Wonder-er Framework
             </button>
 
             <div className="w-full h-px bg-wonder-purple/10" />
 
             <p className="text-wonder-teal/50 font-body text-xs leading-relaxed">
-              Wonder is not a substitute for professional mental health support. If you're in crisis, please reach out to a trusted person or professional.
+              Wonder-er is not a substitute for professional mental health support. If you're in crisis, please reach out to a trusted person or professional.
             </p>
           </div>
         </section>

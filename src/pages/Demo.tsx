@@ -26,7 +26,7 @@ const SCENES: DemoScene[] = [
     phaseColor: "text-wonder-teal",
     label: "The session begins with presence",
     beats: [
-      { role: "stage", text: "You open Wonder. No login. No streak count. Just a breathing orb waiting for you.", pause: 4000 },
+      { role: "stage", text: "You open Wonder-er. No login. No streak count. Just a breathing orb waiting for you.", pause: 4000 },
       { role: "ai", text: "Hey. What would you like to experience today?", pause: 3500 },
       { role: "human", text: "Honestly... kind of scattered. Long day. I don't even know why I opened this.", pause: 4000 },
       { role: "ai", text: "That's a perfectly fine reason to be here. Scattered is just another word for open in a lot of directions. What's pulling at you most?", pause: 5000 },
@@ -185,7 +185,7 @@ const Demo = () => {
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 pl-16 z-20">
         <div>
-          <h1 className="text-wonder-teal font-display text-lg">Finding Wonder</h1>
+          <h1 className="text-wonder-teal font-display text-lg">Finding Wonder-er</h1>
           <p className="text-wonder-purple/40 font-body text-xs">A walk-through of the experience</p>
         </div>
       </div>
@@ -239,7 +239,7 @@ const Demo = () => {
                       <span className={`font-body text-xs uppercase tracking-[0.25em] block mb-5 ${
                         beat.role === "ai" ? "text-wonder-purple/50" : "text-wonder-teal/50"
                       }`}>
-                        {beat.role === "ai" ? "✦ Wonder" : "You"}
+                        {beat.role === "ai" ? "✦ Wonder-er" : "You"}
                       </span>
                       <p className={`font-display text-xl md:text-2xl lg:text-[1.7rem] leading-[1.6] tracking-wide ${
                         beat.role === "ai" ? "text-wonder-teal/90 italic" : "text-wonder-teal"

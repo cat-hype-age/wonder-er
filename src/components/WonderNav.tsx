@@ -8,7 +8,7 @@ const navItems = [
   { label: "Begin Session", path: "/session?mode=reflection", icon: Mic },
   { label: "Watch Demo", path: "/demo", icon: Play },
   { label: "Slide Deck", path: "/slides", icon: Presentation },
-  { label: "About Wonder", path: "/framework", icon: BookOpen },
+  { label: "About Wonder-er", path: "/framework", icon: BookOpen },
   { label: "Settings", path: "/settings", icon: Settings },
 ];
 
@@ -61,7 +61,7 @@ const WonderNav = () => {
             >
               {/* Header */}
               <div className="flex items-center justify-between px-6 py-5 border-b border-wonder-purple/10">
-                <span className="text-wonder-teal font-display text-lg">Wonder</span>
+                <span className="text-wonder-teal font-display text-lg">Wonder-er</span>
                 <button
                   onClick={() => setOpen(false)}
                   className="text-wonder-teal/50 hover:text-wonder-teal transition-colors"

@@ -62,7 +62,7 @@ const Framework = () => {
         animate={{ opacity: 1, y: 0 }}
       >
         <div>
-          <h1 className="text-wonder-teal font-display text-2xl">Wonder Framework</h1>
+          <h1 className="text-wonder-teal font-display text-2xl">Wonder-er Framework</h1>
           <p className="text-wonder-purple/50 font-body text-xs mt-0.5">
             Center for Humane Technology Hackathon — February 13, 2026
           </p>
