@@ -2,6 +2,8 @@ type Msg = { role: "user" | "assistant"; content: string };
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/wonder-chat`;
 const TTS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/wonder-tts`;
+const VISUALS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/wonder-visuals`;
+const SFX_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/wonder-sfx`;
 
 export async function streamWonderChat({
   messages,
@@ -138,8 +140,48 @@ export async function generateSessionSummary(messages: Msg[]): Promise<SessionSu
   }
 
   const text = await resp.text();
-  // Extract JSON from possible markdown fences
   const jsonMatch = text.match(/\{[\s\S]*?\}/);
   if (!jsonMatch) throw new Error("Invalid summary format");
   return JSON.parse(jsonMatch[0]);
+}
+
+export type WonderVisual = {
+  imageBase64: string | null;
+  soundscapePrompt: string | null;
+};
+
+export async function generateWonderVisual(messages: Msg[]): Promise<WonderVisual> {
+  const resp = await fetch(VISUALS_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+    },
+    body: JSON.stringify({ messages }),
+  });
+
+  if (!resp.ok) {
+    throw new Error(`Visuals failed: ${resp.status}`);
+  }
+
+  return resp.json();
+}
+
+export async function fetchWonderSFX(prompt: string, duration?: number): Promise<string> {
+  const response = await fetch(SFX_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+      Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+    },
+    body: JSON.stringify({ prompt, duration: duration || 8 }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`SFX request failed: ${response.status}`);
+  }
+
+  const audioBlob = await response.blob();
+  return URL.createObjectURL(audioBlob);
 }
