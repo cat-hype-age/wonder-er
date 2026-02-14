@@ -10,6 +10,7 @@ import Session from "./pages/Session";
 import Settings from "./pages/Settings";
 import Framework from "./pages/Framework";
 import Demo from "./pages/Demo";
+import Slides from "./pages/Slides";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const AnimatedRoutes = () => {
             <Route path="/settings" element={<Settings />} />
             <Route path="/framework" element={<Framework />} />
             <Route path="/demo" element={<Demo />} />
+            <Route path="/slides" element={<Slides />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </motion.div>
