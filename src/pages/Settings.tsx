@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Volume2, ChevronDown } from "lucide-react";
+import { ArrowLeft, Volume2, ChevronDown, BookOpen } from "lucide-react";
 
 const VOICES = [
   { id: "EXAVITQu4vr4xnSDxMaL", name: "Sarah", description: "Warm & calm" },
@@ -126,79 +126,37 @@ const Settings = () => {
           </div>
         </section>
 
-        {/* About the Wonder Framework */}
+        {/* About / Framework Link */}
         <section>
           <h2 className="text-wonder-purple font-display text-lg mb-1">About</h2>
-          <p className="text-wonder-purple/50 font-body text-sm mb-5">
+          <p className="text-wonder-purple/50 font-body text-sm mb-4">
             The Wonder Framework
           </p>
 
-          <div className="bg-wonder-navy-light/60 rounded-2xl p-5 border border-wonder-purple/10 flex flex-col gap-5">
-            <div>
-              <h3 className="text-wonder-teal font-display text-base mb-2">What is Wonder?</h3>
-              <p className="text-wonder-teal/70 font-body text-sm leading-relaxed">
-                Wonder is a daily practice for finding awe in the ordinary. It's not therapy, not coaching, not productivity — it's a space to notice what's alive in you and around you.
-              </p>
-            </div>
+          <div className="bg-wonder-navy-light/60 rounded-2xl p-5 border border-wonder-purple/10 flex flex-col gap-4">
+            <p className="text-wonder-teal/70 font-body text-sm leading-relaxed">
+              Wonder is a daily practice for finding awe in the ordinary. It's not therapy, not coaching, not productivity — it's a space to notice what's alive in you and around you.
+            </p>
 
             <div className="w-full h-px bg-wonder-purple/10" />
 
-            <div>
-              <h3 className="text-wonder-teal font-display text-base mb-2">How it works</h3>
-              <p className="text-wonder-teal/70 font-body text-sm leading-relaxed">
-                Each session follows a natural arc: <span className="text-wonder-coral/80">arrive</span>, <span className="text-wonder-gold/80">explore</span>, <span className="text-wonder-purple/80">integrate</span>, <span className="text-wonder-teal">release</span>. The AI companion meets you where you are and uses wonder prompts — gentle reframes, scale shifts, and questions — to help you see your experience with fresh eyes.
-              </p>
-            </div>
+            <p className="text-wonder-teal/70 font-body text-sm leading-relaxed">
+              Each session follows a natural arc: <span className="text-wonder-coral/80">arrive</span>, <span className="text-wonder-gold/80">explore</span>, <span className="text-wonder-purple/80">integrate</span>, <span className="text-wonder-teal">release</span>. Built on ethical guardrails from the Center for Humane Technology — no streaks, no guilt, no addiction mechanics.
+            </p>
+
+            <button
+              onClick={() => navigate("/framework")}
+              className="flex items-center justify-center gap-2 mt-2 px-5 py-3 rounded-xl bg-wonder-purple/15 text-wonder-purple font-body text-sm font-medium hover:bg-wonder-purple/25 transition-colors border border-wonder-purple/20"
+            >
+              <BookOpen size={16} />
+              Read the full Wonder Framework
+            </button>
 
             <div className="w-full h-px bg-wonder-purple/10" />
 
-            <div>
-              <h3 className="text-wonder-teal font-display text-base mb-2">Core principles</h3>
-              <ul className="text-wonder-teal/70 font-body text-sm leading-relaxed flex flex-col gap-2">
-                <li className="flex items-start gap-2">
-                  <span className="text-wonder-coral mt-0.5">·</span>
-                  <span>Wonder cannot be forced, only invited</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-wonder-gold mt-0.5">·</span>
-                  <span>Presence over performance</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-wonder-purple mt-0.5">·</span>
-                  <span>Wonder over interrogation — alternate between asking and offering</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-wonder-coral/70 mt-0.5">·</span>
-                  <span>Surprise is a doorway to wonder</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-wonder-teal mt-0.5">·</span>
-                  <span>Brevity over elaboration</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-wonder-sky mt-0.5">·</span>
-                  <span>Agency stays with the human</span>
-                </li>
-              </ul>
-            </div>
-
-            <div className="w-full h-px bg-wonder-purple/10" />
-
-            <div>
-              <h3 className="text-wonder-teal font-display text-base mb-2">Multimodal experience</h3>
-              <p className="text-wonder-teal/70 font-body text-sm leading-relaxed">
-                Sessions come alive with generated abstract visuals that shift with the conversation's emotional tone, and subtle ambient soundscapes that create a living, breathing environment for reflection.
-              </p>
-            </div>
-
-            <div className="w-full h-px bg-wonder-purple/10" />
-
-            <div>
-              <h3 className="text-wonder-teal font-display text-base mb-2">Important note</h3>
-              <p className="text-wonder-teal/70 font-body text-sm leading-relaxed">
-                Wonder is not a substitute for professional mental health support. If you're in crisis, please reach out to a trusted person or professional who can really be there for you.
-              </p>
-            </div>
+            <p className="text-wonder-teal/50 font-body text-xs leading-relaxed">
+              Wonder is not a substitute for professional mental health support. If you're in crisis, please reach out to a trusted person or professional.
+            </p>
           </div>
         </section>
       </motion.div>
