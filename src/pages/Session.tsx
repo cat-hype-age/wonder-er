@@ -94,7 +94,8 @@ const Session = () => {
           generateVisuals(finalMessages);
 
           try {
-            await playWonderTTS(assistantText);
+            const voiceId = localStorage.getItem("wonder-voice") || undefined;
+            await playWonderTTS(assistantText, voiceId);
           } catch (e) {
             console.error("TTS error:", e);
           }
