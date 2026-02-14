@@ -369,22 +369,37 @@ const Session = () => {
       {/* Transcript overlay */}
       {showTranscript && messages.length > 0 && (
         <motion.div
-          className="absolute top-16 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-[28rem] max-h-[40vh] overflow-y-auto bg-wonder-navy-light/85 backdrop-blur-xl rounded-2xl p-5 z-20 border border-wonder-purple/15 shadow-lg shadow-wonder-navy/40"
+          className="absolute top-16 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-[36rem] max-h-[50vh] overflow-y-auto p-4 z-20 flex flex-col gap-6"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
         >
           {messages.map((msg, i) => (
-            <div key={i} className={`mb-4 last:mb-0 ${msg.role === "user" ? "text-right" : "text-left"}`}>
-              <span
-                className={`inline-block px-4 py-2.5 rounded-2xl font-body leading-relaxed ${
-                  msg.role === "user"
-                    ? "bg-wonder-teal/15 text-wonder-teal text-sm"
-                    : "bg-wonder-purple/10 text-wonder-teal/90 text-[0.9rem]"
+            <motion.div
+              key={i}
+              className="flex justify-center"
+              initial={{ opacity: 0, y: 20, scale: 0.92 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+            >
+              <div
+                className={`w-full max-w-lg rounded-[2rem] px-10 py-10 border shadow-xl ${
+                  msg.role === "assistant"
+                    ? "bg-gradient-to-br from-wonder-purple/15 via-wonder-navy-light/80 to-wonder-teal/5 border-wonder-purple/20 shadow-wonder-purple/15"
+                    : "bg-gradient-to-br from-wonder-teal/10 via-wonder-navy-light/80 to-wonder-sky/5 border-wonder-teal/20 shadow-wonder-teal/15"
                 }`}
               >
-                {msg.content}
-              </span>
-            </div>
+                <span className={`font-body text-xs uppercase tracking-[0.25em] block mb-5 ${
+                  msg.role === "assistant" ? "text-wonder-purple/50" : "text-wonder-teal/50"
+                }`}>
+                  {msg.role === "assistant" ? "✦ Wonder" : "You"}
+                </span>
+                <p className={`font-display text-xl md:text-2xl leading-[1.6] tracking-wide ${
+                  msg.role === "assistant" ? "text-wonder-teal/90 italic" : "text-wonder-teal"
+                }`}>
+                  {msg.content}
+                </p>
+              </div>
+            </motion.div>
           ))}
         </motion.div>
       )}
