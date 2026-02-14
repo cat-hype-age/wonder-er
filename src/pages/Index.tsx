@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Settings } from "lucide-react";
+import { Settings, Play } from "lucide-react";
 
 import portraitChild from "@/assets/portrait-child-wonder.jpg";
 import portraitElder from "@/assets/portrait-elder-joy.jpg";
@@ -193,8 +193,16 @@ const Index = () => {
           </div>
 
           <div className="flex items-center gap-4 mt-2">
+            <button
+              onClick={() => navigate("/demo")}
+              className="text-wonder-purple/50 hover:text-wonder-purple transition-colors font-body text-sm flex items-center gap-1.5"
+            >
+              <Play size={14} />
+              Watch the demo
+            </button>
+            <span className="text-wonder-purple/20">·</span>
             <p className="text-wonder-purple/50 text-sm font-body">
-              No account needed. Just begin.
+              No account needed
             </p>
             <button
               onClick={() => navigate("/settings")}
