@@ -121,6 +121,24 @@ const Index = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.8 }}
         >
+          {/* Big Logo / Name */}
+          <motion.div
+            className="flex flex-col items-center gap-2"
+            initial={{ opacity: 0, scale: 0.8, filter: "blur(16px)" }}
+            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+            transition={{ delay: 0.4, duration: 1.2, ease: "easeOut" }}
+          >
+            <h2 className="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-wonder-coral via-wonder-gold to-wonder-teal drop-shadow-[0_0_40px_rgba(255,127,102,0.3)]">
+              Wonder-er
+            </h2>
+            <motion.div
+              className="h-1 w-24 md:w-32 rounded-full bg-gradient-to-r from-wonder-coral via-wonder-gold to-wonder-teal"
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ delay: 1.2, duration: 0.8, ease: "easeOut" }}
+            />
+          </motion.div>
+
           <motion.p
             className="text-wonder-teal/70 font-body text-lg md:text-xl text-center max-w-md"
             initial={{ opacity: 0, filter: "blur(8px)" }}
