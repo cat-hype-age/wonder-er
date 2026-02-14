@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -45,17 +45,64 @@ interface Slide {
 
 const SlideContent = ({ children }: { children: React.ReactNode }) => (
   <div className="w-[1920px] h-[1080px] bg-wonder-navy relative overflow-hidden flex flex-col">
+    {/* Subtle noise texture */}
+    <div
+      className="absolute inset-0 pointer-events-none opacity-[0.03] mix-blend-soft-light z-[1]"
+      style={{
+        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`,
+        backgroundRepeat: 'repeat',
+        backgroundSize: '256px 256px',
+      }}
+    />
     {children}
   </div>
 );
 
 /* Reusable slide-level decorations */
 const GlowOrb = ({ color, className }: { color: string; className: string }) => (
-  <div
+  <motion.div
     className={`absolute rounded-full blur-[120px] opacity-30 pointer-events-none ${className}`}
     style={{ background: `hsl(var(${color}))` }}
+    animate={{ scale: [1, 1.08, 1], opacity: [0.25, 0.35, 0.25] }}
+    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
   />
 );
+
+/* Floating sparkle dots for slides */
+const SlideSparkles = ({ count = 12, hues = [270, 175, 42] }: { count?: number; hues?: number[] }) => {
+  const dots = useMemo(() =>
+    Array.from({ length: count }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: Math.random() * 4 + 2,
+      hue: hues[i % hues.length],
+      delay: Math.random() * 4,
+      duration: 3 + Math.random() * 3,
+    })),
+    [count, hues]
+  );
+  return (
+    <>
+      {dots.map((d) => (
+        <motion.div
+          key={d.id}
+          className="absolute rounded-full pointer-events-none z-[2]"
+          style={{
+            left: `${d.x}%`,
+            top: `${d.y}%`,
+            width: d.size,
+            height: d.size,
+            background: `hsl(${d.hue}, 80%, 70%)`,
+            boxShadow: `0 0 ${d.size * 3}px hsl(${d.hue}, 90%, 65%)`,
+          }}
+          animate={{ opacity: [0, 0.7, 0], scale: [0.5, 1.2, 0.5] }}
+          transition={{ duration: d.duration, delay: d.delay, repeat: Infinity, ease: "easeInOut" }}
+        />
+      ))}
+    </>
+  );
+};
 
 const slides: Slide[] = [
   /* ====== 1. TITLE ====== */
@@ -67,15 +114,17 @@ const slides: Slide[] = [
         <GlowOrb color="--wonder-coral" className="w-[500px] h-[500px] bottom-0 -left-40" />
         <GlowOrb color="--wonder-teal" className="w-[400px] h-[400px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
 
+        <SlideSparkles count={20} hues={[270, 350, 175]} />
+
         {/* portrait mosaic strip */}
         <div className="absolute top-[120px] right-[100px] flex gap-4 opacity-40">
           {[portraitChild, portraitElder, portraitMan, portraitWoman, portraitGolden, portraitBlue].map((src, i) => (
             <motion.div
               key={i}
               className="w-[140px] h-[180px] rounded-2xl overflow-hidden"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 + i * 0.1 }}
+              initial={{ opacity: 0, y: 30, filter: "blur(8px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ delay: 0.4 + i * 0.12, duration: 0.7 }}
             >
               <img src={src} alt="" className="w-full h-full object-cover" />
             </motion.div>
@@ -93,17 +142,17 @@ const slides: Slide[] = [
           </motion.p>
           <motion.h1
             className="font-display text-[120px] leading-[1.05] text-wonder-teal mb-8"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
+            initial={{ opacity: 0, y: 40, filter: "blur(12px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ delay: 0.3, duration: 1 }}
           >
             Wonder
           </motion.h1>
           <motion.p
             className="text-wonder-teal/60 font-body text-[36px] max-w-[900px] leading-relaxed"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
+            initial={{ opacity: 0, filter: "blur(8px)" }}
+            animate={{ opacity: 1, filter: "blur(0px)" }}
+            transition={{ delay: 0.7, duration: 0.8 }}
           >
             An AI voice companion for finding awe in the ordinary
           </motion.p>
@@ -111,7 +160,7 @@ const slides: Slide[] = [
             className="text-wonder-purple/50 font-body text-[22px] mt-12"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.9 }}
+            transition={{ delay: 1.1 }}
           >
             February 14, 2026
           </motion.p>
@@ -527,13 +576,14 @@ const slides: Slide[] = [
         <GlowOrb color="--wonder-purple" className="w-[800px] h-[800px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
         <GlowOrb color="--wonder-teal" className="w-[400px] h-[400px] top-[100px] right-[200px]" />
         <GlowOrb color="--wonder-coral" className="w-[300px] h-[300px] bottom-[100px] left-[200px]" />
+        <SlideSparkles count={30} hues={[270, 350, 175, 42, 200]} />
 
         <div className="flex-1 flex flex-col items-center justify-center text-center relative z-10">
           <motion.h2
             className="font-display text-[100px] text-wonder-teal mb-8"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
+            initial={{ opacity: 0, scale: 0.8, filter: "blur(16px)" }}
+            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+            transition={{ delay: 0.2, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           >
             Wonder awaits.
           </motion.h2>
@@ -633,10 +683,10 @@ const Slides = () => {
           <motion.div
             key={slides[current].id}
             style={{ transform: `scale(${scale})`, transformOrigin: "center center" }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            initial={{ opacity: 0, scale: 0.97, filter: "blur(6px)" }}
+            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+            exit={{ opacity: 0, scale: 1.02, filter: "blur(4px)" }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           >
             {slides[current].render()}
           </motion.div>
