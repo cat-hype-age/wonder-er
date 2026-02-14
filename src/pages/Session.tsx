@@ -42,6 +42,7 @@ const Session = () => {
   const [summary, setSummary] = useState<SessionSummary | null>(null);
   const [wonderImages, setWonderImages] = useState<WonderImageEntry[]>([]);
   const isProcessingRef = useRef(false);
+  const hiddenContextRef = useRef<Msg[]>([]);
 
   const {
     currentImage,
@@ -75,6 +76,9 @@ const Session = () => {
             : "[New session starting. Greet me with a brief, surprising wonder seed to open a thought partnership session. One or two sentences max. Be warm and unexpected.]",
       };
 
+      // Store hidden prompt so it's included in all future API calls
+      hiddenContextRef.current = [hiddenPrompt];
+
       let assistantText = "";
 
       try {
@@ -97,6 +101,8 @@ const Session = () => {
         });
 
         if (assistantText) {
+          // Add greeting response to hidden context for full conversation continuity
+          hiddenContextRef.current = [...hiddenContextRef.current, { role: "assistant", content: assistantText }];
           setConversationState("speaking");
           try {
             const voiceId = localStorage.getItem("wonder-voice") || undefined;
@@ -130,7 +136,7 @@ const Session = () => {
 
       try {
         await streamWonderChat({
-          messages: updatedMessages,
+          messages: [...hiddenContextRef.current, ...updatedMessages],
           mode,
           onDelta: (chunk) => {
             assistantText += chunk;
