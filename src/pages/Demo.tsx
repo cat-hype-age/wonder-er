@@ -26,7 +26,7 @@ const SCENES: DemoScene[] = [
     label: "The session begins with presence",
     beats: [
       { role: "stage", text: "You open Wonder. No login. No streak count. Just a breathing orb waiting for you.", pause: 4000 },
-      { role: "ai", text: "Hey. How are you landing today?", pause: 3500 },
+      { role: "ai", text: "Hey. What would you like to experience today?", pause: 3500 },
       { role: "human", text: "Honestly... kind of scattered. Long day. I don't even know why I opened this.", pause: 4000 },
       { role: "ai", text: "That's a perfectly fine reason to be here. Scattered is just another word for open in a lot of directions. What's pulling at you most?", pause: 5000 },
       { role: "human", text: "Work stuff, mostly. I have this project that's due and I keep avoiding the hard part.", pause: 4000 },
