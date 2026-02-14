@@ -140,7 +140,7 @@ const Index = () => {
           </motion.div>
 
           <motion.p
-            className="text-wonder-teal/70 font-body text-lg md:text-xl text-center max-w-md"
+            className="text-wonder-teal font-body text-xl md:text-2xl text-center max-w-md drop-shadow-[0_0_12px_rgba(100,220,200,0.3)]"
             initial={{ opacity: 0, filter: "blur(8px)" }}
             animate={{ opacity: 1, filter: "blur(0px)" }}
             transition={{ delay: 1, duration: 1 }}
