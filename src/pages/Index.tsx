@@ -139,7 +139,7 @@ const Index = () => {
           <div className="flex items-center gap-4 mt-2">
             <button
               onClick={() => navigate("/demo")}
-              className="px-6 py-3 rounded-full bg-wonder-purple/20 border border-wonder-purple/30 text-wonder-purple font-body font-semibold text-sm flex items-center gap-2 hover:bg-wonder-purple/30 hover:border-wonder-purple/50 transition-all hover:scale-105 shadow-lg shadow-wonder-purple/10"
+              className="px-6 py-3 rounded-full bg-wonder-purple/50 border border-wonder-purple/60 text-white font-body font-semibold text-sm flex items-center gap-2 hover:bg-wonder-purple/65 hover:border-wonder-purple/80 transition-all hover:scale-105 shadow-lg shadow-wonder-purple/20"
             >
               <Play size={16} />
               Watch the demo
