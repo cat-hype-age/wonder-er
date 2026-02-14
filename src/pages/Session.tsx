@@ -360,17 +360,17 @@ const Session = () => {
       {/* Transcript overlay */}
       {showTranscript && messages.length > 0 && (
         <motion.div
-          className="absolute top-16 left-4 right-4 md:left-auto md:right-8 md:w-96 max-h-[40vh] overflow-y-auto bg-wonder-navy-light/90 backdrop-blur-lg rounded-2xl p-4 z-20 border border-wonder-purple/20"
+          className="absolute top-16 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-[28rem] max-h-[40vh] overflow-y-auto bg-wonder-navy-light/85 backdrop-blur-xl rounded-2xl p-5 z-20 border border-wonder-purple/15 shadow-lg shadow-wonder-navy/40"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
         >
           {messages.map((msg, i) => (
-            <div key={i} className={`mb-3 ${msg.role === "user" ? "text-right" : "text-left"}`}>
+            <div key={i} className={`mb-4 last:mb-0 ${msg.role === "user" ? "text-right" : "text-left"}`}>
               <span
-                className={`inline-block px-3 py-2 rounded-2xl text-sm font-body ${
+                className={`inline-block px-4 py-2.5 rounded-2xl font-body leading-relaxed ${
                   msg.role === "user"
-                    ? "bg-wonder-teal/20 text-wonder-teal"
-                    : "bg-wonder-purple/20 text-wonder-purple"
+                    ? "bg-wonder-teal/15 text-wonder-teal text-sm"
+                    : "bg-wonder-purple/10 text-wonder-teal/90 text-[0.9rem]"
                 }`}
               >
                 {msg.content}
@@ -428,33 +428,7 @@ const Session = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8 }}
       >
-        {/* Text input — always visible */}
-        <div className="flex items-center gap-2 w-full max-w-md">
-          <input
-            type="text"
-            value={textInput}
-            onChange={(e) => setTextInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSendText()}
-            placeholder="Type what's on your mind..."
-            className="flex-1 bg-wonder-navy-light border border-wonder-purple/20 rounded-full px-5 py-3 text-wonder-teal font-body text-sm focus:outline-none focus:border-wonder-purple/50 placeholder:text-wonder-purple/30"
-          />
-          <button
-            onClick={handleSendText}
-            disabled={!textInput.trim() || conversationState === "processing" || conversationState === "speaking"}
-            className="w-10 h-10 rounded-full bg-wonder-teal/20 flex items-center justify-center text-wonder-teal hover:bg-wonder-teal/30 transition-colors disabled:opacity-30"
-          >
-            <Send size={16} />
-          </button>
-        </div>
-
-        {/* Divider with "or" */}
-        <div className="flex items-center gap-3 w-full max-w-[200px]">
-          <div className="flex-1 h-px bg-wonder-purple/15" />
-          <span className="text-wonder-purple/40 font-body text-xs">or</span>
-          <div className="flex-1 h-px bg-wonder-purple/15" />
-        </div>
-
-        {/* Mic button with label */}
+        {/* Mic button with label — primary action */}
         <div className="flex flex-col items-center gap-2">
           <button
             onClick={handleMicToggle}
@@ -470,6 +444,32 @@ const Session = () => {
           <span className="text-wonder-purple/40 font-body text-xs">
             {isListening ? "Tap to stop" : "Tap to talk"}
           </span>
+        </div>
+
+        {/* Divider with "or" */}
+        <div className="flex items-center gap-3 w-full max-w-[200px]">
+          <div className="flex-1 h-px bg-wonder-purple/15" />
+          <span className="text-wonder-purple/40 font-body text-xs">or</span>
+          <div className="flex-1 h-px bg-wonder-purple/15" />
+        </div>
+
+        {/* Text input — centered below voice */}
+        <div className="flex items-center gap-2 w-full max-w-md">
+          <input
+            type="text"
+            value={textInput}
+            onChange={(e) => setTextInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSendText()}
+            placeholder="Type what's on your mind..."
+            className="flex-1 bg-wonder-navy-light/80 border border-wonder-purple/20 rounded-full px-5 py-3 text-wonder-teal font-body text-sm focus:outline-none focus:border-wonder-purple/50 placeholder:text-wonder-purple/30"
+          />
+          <button
+            onClick={handleSendText}
+            disabled={!textInput.trim() || conversationState === "processing" || conversationState === "speaking"}
+            className="w-10 h-10 rounded-full bg-wonder-teal/20 flex items-center justify-center text-wonder-teal hover:bg-wonder-teal/30 transition-colors disabled:opacity-30"
+          >
+            <Send size={16} />
+          </button>
         </div>
       </motion.div>
     </div>
