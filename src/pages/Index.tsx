@@ -68,7 +68,7 @@ const Index = () => {
     <div className="min-h-screen min-h-[100dvh] bg-wonder-navy overflow-hidden relative safe-top safe-bottom">
       {/* SEO */}
       <header className="sr-only">
-        <h1>Wonder Companion — Find Awe in Your Daily Life</h1>
+        <h1>Wonder-er — Find Awe in Your Daily Life</h1>
       </header>
 
       <WonderPageBackground />
