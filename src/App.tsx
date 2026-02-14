@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Session from "./pages/Session";
 import Settings from "./pages/Settings";
 import Framework from "./pages/Framework";
+import Demo from "./pages/Demo";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const AnimatedRoutes = () => {
           <Route path="/session" element={<Session />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/framework" element={<Framework />} />
+          <Route path="/demo" element={<Demo />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </motion.div>
