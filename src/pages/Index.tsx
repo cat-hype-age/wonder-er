@@ -145,7 +145,7 @@ const Index = () => {
               Watch the demo
             </button>
             <span className="text-wonder-purple/20">·</span>
-            <p className="text-wonder-purple/50 text-sm font-body">
+            <p className="text-white text-sm font-body">
               No account needed
             </p>
             <button
