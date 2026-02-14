@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Settings, Play } from "lucide-react";
+import { Play } from "lucide-react";
 import WonderPageBackground from "@/components/WonderPageBackground";
 
 import portraitChild from "@/assets/portrait-child-wonder.jpg";
@@ -148,13 +148,6 @@ const Index = () => {
             <p className="text-white text-sm font-body">
               No account needed
             </p>
-            <button
-              onClick={() => navigate("/settings")}
-              className="text-wonder-purple/30 hover:text-wonder-purple/60 transition-colors"
-              aria-label="Settings"
-            >
-              <Settings size={18} />
-            </button>
           </div>
         </motion.div>
       </main>

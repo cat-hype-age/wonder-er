@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Volume2, ChevronDown, BookOpen } from "lucide-react";
+import { Volume2, BookOpen } from "lucide-react";
 import WonderPageBackground from "@/components/WonderPageBackground";
 
 const VOICES = [
@@ -50,16 +50,10 @@ const Settings = () => {
 
       {/* Header */}
       <motion.div
-        className="flex items-center gap-4 px-6 py-5"
+        className="flex items-center gap-4 px-6 py-5 pl-16"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <button
-          onClick={() => navigate("/")}
-          className="text-wonder-teal/70 hover:text-wonder-teal transition-colors"
-        >
-          <ArrowLeft size={20} />
-        </button>
         <h1 className="text-wonder-teal font-display text-2xl">Settings</h1>
       </motion.div>
 

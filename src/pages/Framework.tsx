@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import WonderPageBackground from "@/components/WonderPageBackground";
 
@@ -57,16 +57,10 @@ const Framework = () => {
 
       {/* Header */}
       <motion.div
-        className="flex items-center gap-4 px-6 py-5"
+        className="flex items-center gap-4 px-6 py-5 pl-16"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <button
-          onClick={() => navigate(-1)}
-          className="text-wonder-teal/70 hover:text-wonder-teal transition-colors"
-        >
-          <ArrowLeft size={20} />
-        </button>
         <div>
           <h1 className="text-wonder-teal font-display text-2xl">Wonder Framework</h1>
           <p className="text-wonder-purple/50 font-body text-xs mt-0.5">
