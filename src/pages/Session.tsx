@@ -1,9 +1,11 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mic, MicOff, MessageSquare, X, Send, Keyboard } from "lucide-react";
+import { Mic, MicOff, MessageSquare, X, Send, Eye, EyeOff, Volume2, VolumeX } from "lucide-react";
 import { streamWonderChat, playWonderTTS, generateSessionSummary, type SessionSummary } from "@/lib/wonder-api";
 import { useSpeechRecognition } from "@/hooks/use-speech-recognition";
+import { useWonderVisuals } from "@/hooks/use-wonder-visuals";
+import WonderBackground from "@/components/WonderBackground";
 import { toast } from "sonner";
 
 type ConversationState = "idle" | "listening" | "processing" | "speaking";
@@ -38,6 +40,20 @@ const Session = () => {
   const [summary, setSummary] = useState<SessionSummary | null>(null);
   const isProcessingRef = useRef(false);
 
+  const {
+    currentImage,
+    previousImage,
+    visualsEnabled,
+    soundEnabled,
+    toggleVisuals,
+    toggleSound,
+    generateVisuals,
+    cleanup,
+  } = useWonderVisuals();
+
+  // Cleanup ambient audio on unmount
+  useEffect(() => () => cleanup(), [cleanup]);
+
   const sendToAI = useCallback(
     async (userText: string) => {
       if (isProcessingRef.current) return;
@@ -69,14 +85,18 @@ const Session = () => {
           onDone: () => {},
         });
 
-        // Play TTS
+        // Play TTS and generate visuals in parallel
         if (assistantText) {
           setConversationState("speaking");
+          const finalMessages = [...updatedMessages, { role: "assistant" as const, content: assistantText }];
+          
+          // Start visual generation in parallel (non-blocking)
+          generateVisuals(finalMessages);
+
           try {
             await playWonderTTS(assistantText);
           } catch (e) {
             console.error("TTS error:", e);
-            // TTS failure is non-fatal — user can still read transcript
           }
         }
       } catch (e: any) {
@@ -142,19 +162,35 @@ const Session = () => {
 
   return (
     <div className="min-h-screen min-h-[100dvh] bg-wonder-navy flex flex-col items-center justify-between relative overflow-hidden safe-top safe-bottom">
+      {/* Wonder background visuals */}
+      <WonderBackground
+        currentImage={currentImage}
+        previousImage={previousImage}
+        enabled={visualsEnabled}
+      />
+
       <AnimatePresence mode="wait">
         {/* Summary screen */}
         {(sessionPhase === "summarizing" || sessionPhase === "summary") && (
           <motion.div
             key="summary"
-            className="absolute inset-0 z-30 bg-wonder-navy flex flex-col items-center justify-center px-6"
+            className="absolute inset-0 z-30 flex flex-col items-center justify-center px-6 overflow-hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
+            {/* Summary backdrop — last wonder image */}
+            {currentImage && (
+              <div className="absolute inset-0">
+                <img src={currentImage} alt="" className="w-full h-full object-cover opacity-40" />
+                <div className="absolute inset-0 bg-wonder-navy/70" />
+              </div>
+            )}
+            {!currentImage && <div className="absolute inset-0 bg-wonder-navy" />}
+            
             {sessionPhase === "summarizing" ? (
               <motion.div
-                className="flex flex-col items-center gap-6"
+                className="relative z-10 flex flex-col items-center gap-6"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
@@ -163,7 +199,7 @@ const Session = () => {
               </motion.div>
             ) : summary && (
               <motion.div
-                className="flex flex-col items-center gap-10 max-w-lg text-center"
+                className="relative z-10 flex flex-col items-center gap-10 max-w-lg text-center"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
@@ -226,13 +262,31 @@ const Session = () => {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
       >
-        <button
-          onClick={() => setShowTranscript(!showTranscript)}
-          className="text-wonder-teal/60 hover:text-wonder-teal transition-colors font-body text-sm flex items-center gap-2"
-        >
-          <MessageSquare size={16} />
-          {showTranscript ? "Hide transcript" : "Show transcript"}
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowTranscript(!showTranscript)}
+            className="text-wonder-teal/60 hover:text-wonder-teal transition-colors font-body text-sm flex items-center gap-2"
+          >
+            <MessageSquare size={16} />
+            <span className="hidden sm:inline">{showTranscript ? "Hide" : "Transcript"}</span>
+          </button>
+
+          <button
+            onClick={toggleVisuals}
+            className={`transition-colors flex items-center gap-1 font-body text-xs ${visualsEnabled ? 'text-wonder-purple/60 hover:text-wonder-purple' : 'text-wonder-purple/30'}`}
+            title={visualsEnabled ? "Disable visuals" : "Enable visuals"}
+          >
+            {visualsEnabled ? <Eye size={14} /> : <EyeOff size={14} />}
+          </button>
+
+          <button
+            onClick={toggleSound}
+            className={`transition-colors flex items-center gap-1 font-body text-xs ${soundEnabled ? 'text-wonder-purple/60 hover:text-wonder-purple' : 'text-wonder-purple/30'}`}
+            title={soundEnabled ? "Mute ambient" : "Enable ambient"}
+          >
+            {soundEnabled ? <Volume2 size={14} /> : <VolumeX size={14} />}
+          </button>
+        </div>
 
         <button
           onClick={handleEndSession}
