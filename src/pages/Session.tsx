@@ -6,6 +6,7 @@ import { streamWonderChat, playWonderTTS, generateSessionSummary, type SessionSu
 import { useSpeechRecognition } from "@/hooks/use-speech-recognition";
 import { useWonderVisuals } from "@/hooks/use-wonder-visuals";
 import WonderBackground from "@/components/WonderBackground";
+import WonderPageBackground from "@/components/WonderPageBackground";
 import { toast } from "sonner";
 
 type ConversationState = "idle" | "listening" | "processing" | "speaking";
@@ -222,6 +223,7 @@ const Session = () => {
 
   return (
     <div className="min-h-screen min-h-[100dvh] bg-wonder-navy flex flex-col items-center justify-between relative overflow-hidden safe-top safe-bottom">
+      <WonderPageBackground />
       {/* Wonder background visuals */}
       <WonderBackground
         currentImage={currentImage}

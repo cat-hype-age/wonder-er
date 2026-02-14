@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import WonderPageBackground from "@/components/WonderPageBackground";
 
 const Section = ({ title, children, delay = 0 }: { title: string; children: React.ReactNode; delay?: number }) => (
   <motion.section
@@ -49,7 +50,8 @@ const Framework = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-wonder-navy safe-top safe-bottom">
+    <div className="min-h-screen min-h-[100dvh] bg-wonder-navy safe-top safe-bottom relative overflow-hidden">
+      <WonderPageBackground />
       {/* Warm accent line */}
       <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-wonder-coral/30 to-transparent" />
 
