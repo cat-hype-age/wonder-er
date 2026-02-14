@@ -183,17 +183,11 @@ const Demo = () => {
       </div>
 
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 z-20">
+      <div className="flex items-center justify-between px-6 py-4 pl-16 z-20">
         <div>
           <h1 className="text-wonder-teal font-display text-lg">Finding Wonder</h1>
           <p className="text-wonder-purple/40 font-body text-xs">A walk-through of the experience</p>
         </div>
-        <button
-          onClick={() => navigate("/")}
-          className="text-wonder-teal/50 hover:text-wonder-teal transition-colors"
-        >
-          <X size={20} />
-        </button>
       </div>
 
       {/* Phase indicator */}
