@@ -54,6 +54,65 @@ const Session = () => {
   // Cleanup ambient audio on unmount
   useEffect(() => () => cleanup(), [cleanup]);
 
+  // AI-initiated wonder greeting on session start
+  const greetingFired = useRef(false);
+  useEffect(() => {
+    if (greetingFired.current) return;
+    greetingFired.current = true;
+
+    const fireGreeting = async () => {
+      setConversationState("processing");
+      isProcessingRef.current = true;
+
+      const hiddenPrompt: Msg = {
+        role: "user",
+        content:
+          mode === "reflection"
+            ? "[New session starting. Greet me with a brief, surprising wonder seed to open a daily reflection. One or two sentences max. Be warm and unexpected.]"
+            : "[New session starting. Greet me with a brief, surprising wonder seed to open a thought partnership session. One or two sentences max. Be warm and unexpected.]",
+      };
+
+      let assistantText = "";
+
+      try {
+        await streamWonderChat({
+          messages: [hiddenPrompt],
+          mode,
+          onDelta: (chunk) => {
+            assistantText += chunk;
+            setMessages((prev) => {
+              const last = prev[prev.length - 1];
+              if (last?.role === "assistant") {
+                return prev.map((m, i) =>
+                  i === prev.length - 1 ? { ...m, content: assistantText } : m
+                );
+              }
+              return [{ role: "assistant", content: assistantText }];
+            });
+          },
+          onDone: () => {},
+        });
+
+        if (assistantText) {
+          setConversationState("speaking");
+          try {
+            const voiceId = localStorage.getItem("wonder-voice") || undefined;
+            await playWonderTTS(assistantText, voiceId);
+          } catch (e) {
+            console.error("Greeting TTS error:", e);
+          }
+        }
+      } catch (e: any) {
+        console.error("Greeting error:", e);
+      } finally {
+        setConversationState("idle");
+        isProcessingRef.current = false;
+      }
+    };
+
+    fireGreeting();
+  }, [mode]);
+
   const sendToAI = useCallback(
     async (userText: string) => {
       if (isProcessingRef.current) return;
@@ -348,16 +407,14 @@ const Session = () => {
           {stateLabels[conversationState]}
         </motion.p>
 
-        {conversationState === "idle" && messages.length === 0 && (
+        {conversationState === "processing" && messages.length === 0 && (
           <motion.p
             className="text-wonder-teal/80 font-display text-xl md:text-2xl text-center max-w-md px-4"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2 }}
+            transition={{ delay: 0.3 }}
           >
-            {mode === "reflection"
-              ? "How are you arriving today?"
-              : "What are you working through?"}
+            Finding a wonder seed for you...
           </motion.p>
         )}
       </div>
