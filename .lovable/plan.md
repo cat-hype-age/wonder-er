@@ -1,88 +1,92 @@
 
 
-# Wonder Companion — Voice-First AI Practice Partner
+# Multimodal Wonder Experience
 
-## Vision
-A voice-first AI companion for daily wonder practice — helping humans find awe in reflection and work. Built for the Center for Humane Technology Hackathon, operating under the Truce Protocol.
+## Overview
 
----
+Transform the session from voice-only into a full sensory experience. After each AI response, the system generates a **wonder image** (an abstract, evocative visual inspired by the conversation) and optionally an **ambient soundscape** -- creating a living, breathing environment that responds to the emotional texture of the dialogue.
 
-## Page 1: Landing — "The Universal WOW"
+## What the User Experiences
 
-**A joyful, multicultural celebration of awe.**
+1. Session begins as usual -- orb, voice/text input
+2. After each AI response, a **wonder image** fades in behind the orb -- an abstract, painterly visual generated from the conversation's emotional tone (not a literal illustration)
+3. Optionally, a subtle **ambient soundscape** plays softly underneath the conversation (e.g., "gentle rain on leaves" if discussing calm, "distant thunder and wind" if exploring tension)
+4. Images crossfade between turns, creating a slowly evolving visual landscape
+5. The session summary page also gets a final generated image as a keepsake
 
-- Mixed-media collage of diverse faces expressing wonder — AI-generated portraits in varied artistic styles (painterly, sketchy, photographic) arranged in an organic, flowing layout
-- Bold, colorful exclamations scattered playfully across the screen in many scripts and languages: **"WOW"** · **"واو"** · **"すごい"** · **"¡Guau!"** · **"Вау"** · **"哇"** · **"와"** · **"Uau"** — different fonts, sizes, angles, colors
-- Faces and words animate in — cycling, floating, gently rotating — creating a living collage that feels warm and alive
-- Charm & humor woven in: maybe a kid with mouth wide open, an elder laughing with delight, someone seeing snow for the first time
-- Two gentle entry points visible alongside the gallery:
-  - **"Check in with yourself"** → Daily Reflection mode
-  - **"Work through something"** → Thought Partnership mode
-- No sign-up wall. No account required. Just begin.
+## Technical Architecture
 
----
+### New Edge Function: `wonder-visuals`
 
-## Page 2: The Voice Conversation Interface
+A new backend function that takes the latest conversation exchange and returns:
+- An image generation prompt (distilled from the conversation mood)
+- A soundscape prompt (short ambient description)
 
-**The core experience — voice-first interaction with the Wonder Companion.**
+Uses Gemini Flash to analyze the conversation and produce evocative prompts, then calls `google/gemini-2.5-flash-image` to generate an abstract image.
 
-- Transition from the colorful landing into a calm, focused space — deep navy/dark background
-- Central animated element (soft glowing orb or gentle visual) that responds to conversation state:
-  - **Listening** — gentle pulse, present and attentive
-  - **Speaking** — faster, subtler animation while AI responds
-  - **Processing** — soft transition while thinking
-  - **Idle** — slow breathing, comfortable with silence
-- **End Session** button always visible, never guilt-inducing
-- Optional text input fallback for those who prefer typing
-- Optional transcript toggle (off by default to keep experience voice-centered)
+Returns the image as base64 and the soundscape prompt as text.
 
----
+### New Edge Function: `wonder-sfx`
 
-## Page 3: The Wonder Framework Engine (Behind the Scenes)
+Uses ElevenLabs Sound Effects API to generate short ambient soundscapes (5-10 seconds) from text prompts. These loop softly in the background.
 
-**Voice pipeline powering the companion:**
+### Session Page Changes
 
-1. **Voice In** — Browser's Web Speech API captures user speech
-2. **AI Intelligence** — Gemini 2.5 via Supabase Edge Function, with the full Wonder Framework embedded in its system prompt (Input → Experience → Output layers, wonder prompts, ethical guardrails, crisis protocol)
-3. **Voice Out** — ElevenLabs streaming TTS responds in a warm, calm voice
+- Add a full-screen background layer behind the orb that displays the generated wonder image with a slow crossfade (opacity transition over 2-3 seconds)
+- Add ambient audio layer that plays looped soundscapes at low volume (15-20% volume)
+- A small toggle in the top bar to mute/disable visuals and sound if desired
+- Images are generated asynchronously after TTS plays -- they enhance but never block the conversation flow
+- On the summary screen, the final wonder image becomes the backdrop for the "You arrived / You're leaving with" text
 
-**Session arc built into the AI's behavior:**
-- **Arrival** — "How are you arriving today?"
-- **Exploration** — Wonder prompts woven naturally (reframes, scale shifts, beauty hunts) — max 2-3 per session, never forced
-- **Integration** — "What's one thing landing for you?"
-- **Release** — "Go well." Clean ending, no hooks or streaks
+### Files to Create
 
----
+1. **`supabase/functions/wonder-visuals/index.ts`** -- Analyzes conversation, generates image via Gemini image model, returns base64 image + soundscape prompt
+2. **`supabase/functions/wonder-sfx/index.ts`** -- Takes a soundscape prompt, calls ElevenLabs SFX API, returns audio
 
-## Page 4: Ethical Design — Anti-Addiction Architecture
+### Files to Modify
 
-**What makes this humane:**
+1. **`src/lib/wonder-api.ts`** -- Add `generateWonderVisual()` and `generateWonderSFX()` functions
+2. **`src/pages/Session.tsx`** -- Add background image layer, ambient audio player, visual toggle, integrate visual generation into the conversation flow
+3. **`supabase/config.toml`** -- Register new edge functions with `verify_jwt = false`
 
-- No streaks, no push notifications, no metrics
-- No infinite sessions — AI senses natural endings
-- No social comparison — personal journey only
-- No guilt mechanics — unconditional welcome whenever you return
-- Crisis protocol — if distress detected, warmly direct to real human support
-- Agency stays with the human: "You noticed that" — never "I showed you that"
+### Conversation Flow with Visuals
 
----
+```text
+User speaks/types
+  -> AI streams text response
+  -> TTS plays response
+  -> Meanwhile: wonder-visuals generates image + soundscape prompt
+  -> Image crossfades in behind orb
+  -> wonder-sfx generates ambient audio
+  -> Ambient audio fades in at low volume
+  -> Next turn: previous image/audio crossfades out as new ones arrive
+```
 
-## Page 5: Minimal Settings
+### Image Generation Strategy
 
-- Voice selection (2-3 warm ElevenLabs voice options)
-- Transcript display toggle
-- About the Wonder Framework
-- Privacy statement (nothing persisted in MVP)
+The wonder-visuals function uses a two-step approach:
+1. Gemini Flash analyzes the last 2-3 messages and produces an **abstract visual prompt** (e.g., "An abstract watercolor of warm golden light breaking through deep blue clouds, sense of emergence and possibility") -- never literal, always evocative
+2. Gemini Flash Image generates the actual image from that prompt
 
----
+The system prompt instructs the AI to create prompts that are:
+- Abstract and painterly, never photorealistic
+- Emotionally resonant with the conversation tone
+- Shifting in palette and texture as the session evolves
+- Safe and beautiful -- no disturbing imagery
 
-## Technical Approach
+### Soundscape Strategy
 
-- **Frontend:** React + Tailwind CSS with CSS animations for the collage and orb
-- **Landing images:** AI-generated via Gemini image generation (mixed-media portrait collage)
-- **Backend:** Supabase Edge Functions for secure Gemini 2.5 and ElevenLabs API calls
-- **Voice In:** Web Speech API (browser-native)
-- **Voice Out:** ElevenLabs streaming TTS
-- **State:** Client-side only — conversation lives in React state, nothing persisted
-- **Secrets needed:** Gemini API key, ElevenLabs API key
+Short (5-10 second) ambient loops generated via ElevenLabs SFX:
+- Matched to emotional tone: calm conversations get gentle nature sounds, energetic ones get subtle rhythmic textures
+- Played at very low volume (15-20%) so they don't compete with voice
+- Crossfade between soundscapes as the conversation evolves
+- User can mute with a single tap
+
+### Performance Considerations
+
+- Image and SFX generation happen in parallel, after TTS completes
+- Images are displayed as data URIs (no storage needed)
+- Previous images are cleaned up to prevent memory leaks
+- If generation fails, the session continues normally -- visuals are purely additive
+- Soundscapes are cached per turn to avoid re-generation
 
