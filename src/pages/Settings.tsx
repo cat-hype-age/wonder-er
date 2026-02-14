@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Volume2, ChevronDown, BookOpen } from "lucide-react";
+import WonderPageBackground from "@/components/WonderPageBackground";
 
 const VOICES = [
   { id: "EXAVITQu4vr4xnSDxMaL", name: "Sarah", description: "Warm & calm" },
@@ -42,7 +43,8 @@ const Settings = () => {
   }, [ambientEnabled]);
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-wonder-navy safe-top safe-bottom">
+    <div className="min-h-screen min-h-[100dvh] bg-wonder-navy safe-top safe-bottom relative overflow-hidden">
+      <WonderPageBackground />
       {/* Warm accent line bridging landing page warmth */}
       <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-wonder-coral/30 to-transparent" />
 

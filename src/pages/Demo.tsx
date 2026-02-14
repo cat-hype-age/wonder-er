@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause, SkipForward, X, RotateCcw } from "lucide-react";
+import WonderPageBackground from "@/components/WonderPageBackground";
 
 type BubbleRole = "ai" | "human" | "stage";
 
@@ -170,19 +171,7 @@ const Demo = () => {
 
   return (
     <div className="min-h-screen min-h-[100dvh] bg-wonder-navy flex flex-col relative overflow-hidden safe-top safe-bottom">
-      {/* Background texture */}
-      <motion.div
-        className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(circle, hsl(270 50% 55% / 0.08) 0%, transparent 70%)" }}
-        animate={{ x: [0, 20, -10, 0], y: [0, -15, 10, 0] }}
-        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="absolute bottom-[0%] right-[-10%] w-[40vw] h-[40vw] rounded-full pointer-events-none"
-        style={{ background: "radial-gradient(circle, hsl(350 72% 55% / 0.06) 0%, transparent 70%)" }}
-        animate={{ x: [0, -15, 10, 0], y: [0, 10, -15, 0] }}
-        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-      />
+      <WonderPageBackground />
 
       {/* Progress bar */}
       <div className="w-full h-[2px] bg-wonder-navy-light relative z-20">
