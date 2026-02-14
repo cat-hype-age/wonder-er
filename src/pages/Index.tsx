@@ -35,7 +35,6 @@ const wowWords = [
   { text: "Uau!", color: "text-wonder-purple", font: "font-display italic font-bold", size: "text-5xl md:text-6xl", delay: 0.55 },
 ];
 
-// Positions for the collage grid — organic, non-uniform (5 cols x 4 rows)
 const portraitPositions = [
   "col-start-1 row-start-1",
   "col-start-3 row-start-1",
@@ -64,13 +63,65 @@ const Index = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-background overflow-hidden relative safe-top safe-bottom">
+    <div className="min-h-screen min-h-[100dvh] bg-wonder-navy overflow-hidden relative safe-top safe-bottom">
       {/* SEO */}
       <header className="sr-only">
         <h1>Wonder Companion — Find Awe in Your Daily Life</h1>
       </header>
 
-      <main className="relative min-h-screen flex flex-col">
+      {/* === TEXTURE LAYERS === */}
+      {/* Animated colorful gradient blobs */}
+      <motion.div
+        className="absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, hsl(350 72% 55% / 0.15) 0%, transparent 70%)' }}
+        animate={{ x: [0, 30, -20, 0], y: [0, -20, 15, 0], scale: [1, 1.1, 0.95, 1] }}
+        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute top-[10%] right-[-15%] w-[50vw] h-[50vw] rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, hsl(270 50% 55% / 0.12) 0%, transparent 70%)' }}
+        animate={{ x: [0, -25, 15, 0], y: [0, 25, -10, 0], scale: [1, 0.9, 1.1, 1] }}
+        transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute bottom-[5%] left-[20%] w-[45vw] h-[45vw] rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, hsl(175 45% 45% / 0.1) 0%, transparent 65%)' }}
+        animate={{ x: [0, 20, -15, 0], y: [0, -15, 20, 0], scale: [1, 1.05, 0.95, 1] }}
+        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute top-[40%] right-[10%] w-[35vw] h-[35vw] rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, hsl(42 90% 58% / 0.08) 0%, transparent 60%)' }}
+        animate={{ x: [0, -10, 20, 0], y: [0, 15, -20, 0] }}
+        transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute bottom-[20%] right-[30%] w-[30vw] h-[30vw] rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, hsl(200 70% 55% / 0.1) 0%, transparent 65%)' }}
+        animate={{ x: [0, 15, -10, 0], y: [0, -20, 10, 0], scale: [1, 1.08, 0.92, 1] }}
+        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      {/* Noise/grain texture overlay for depth */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.04] mix-blend-soft-light z-[1]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`,
+          backgroundRepeat: 'repeat',
+          backgroundSize: '256px 256px',
+        }}
+      />
+
+      {/* Subtle grid lines for structure */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.03] z-[1]"
+        style={{
+          backgroundImage: `linear-gradient(hsl(270 50% 55% / 0.3) 1px, transparent 1px), linear-gradient(90deg, hsl(270 50% 55% / 0.3) 1px, transparent 1px)`,
+          backgroundSize: '80px 80px',
+        }}
+      />
+
+      <main className="relative min-h-screen flex flex-col z-[2]">
         {/* Collage area */}
         <div className="flex-1 relative px-4 pt-8 pb-4 md:px-8">
           <div className="grid grid-cols-5 grid-rows-3 gap-4 md:gap-6 max-w-6xl mx-auto h-full min-h-[55vh]">
@@ -86,7 +137,7 @@ const Index = () => {
                 <motion.img
                   src={p.src}
                   alt={p.alt}
-                  className={`w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 lg:w-48 lg:h-48 object-cover shadow-xl ${p.style}`}
+                  className={`w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 lg:w-48 lg:h-48 object-cover shadow-2xl ring-1 ring-white/10 ${p.style}`}
                   animate={{ y: [0, i % 2 === 0 ? -6 : -10, 0] }}
                   transition={{ duration: 5 + i * 0.6, repeat: Infinity, ease: "easeInOut" }}
                 />
@@ -97,7 +148,7 @@ const Index = () => {
             {wowWords.map((w, i) => (
               <motion.span
                 key={w.text}
-                className={`${wowPositions[i]} ${w.color} ${w.font} ${w.size} select-none pointer-events-none z-10`}
+                className={`${wowPositions[i]} ${w.color} ${w.font} ${w.size} select-none pointer-events-none z-10 drop-shadow-[0_0_15px_currentColor]`}
                 style={{ ["--rotate" as string]: `${(i % 2 === 0 ? 1 : -1) * (3 + i * 2)}deg` }}
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: [0.6, 1, 0.6], scale: 1 }}
@@ -112,8 +163,8 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Bottom gradient foreshadowing session environment */}
-        <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-wonder-navy/8 via-wonder-purple/3 to-transparent pointer-events-none z-10" />
+        {/* Bottom gradient */}
+        <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-wonder-navy via-wonder-navy/80 to-transparent pointer-events-none z-10" />
 
         {/* Entry points */}
         <motion.div
@@ -122,20 +173,20 @@ const Index = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2, duration: 0.8 }}
         >
-          <p className="text-muted-foreground font-body text-lg md:text-xl text-center max-w-md">
+          <p className="text-wonder-teal/70 font-body text-lg md:text-xl text-center max-w-md">
             A moment of wonder is waiting for you.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4">
             <button
               onClick={() => navigate("/session?mode=reflection")}
-              className="px-8 py-4 rounded-full bg-wonder-coral text-white font-body font-semibold text-lg shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-[0.98]"
+              className="px-8 py-4 rounded-full bg-wonder-coral text-white font-body font-semibold text-lg shadow-lg shadow-wonder-coral/20 hover:shadow-xl hover:shadow-wonder-coral/30 transition-all hover:scale-105 active:scale-[0.98]"
             >
               Check in with yourself
             </button>
             <button
               onClick={() => navigate("/session?mode=partnership")}
-              className="px-8 py-4 rounded-full bg-wonder-teal text-white font-body font-semibold text-lg shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-[0.98]"
+              className="px-8 py-4 rounded-full bg-wonder-teal text-white font-body font-semibold text-lg shadow-lg shadow-wonder-teal/20 hover:shadow-xl hover:shadow-wonder-teal/30 transition-all hover:scale-105 active:scale-[0.98]"
             >
               Work through something
             </button>
