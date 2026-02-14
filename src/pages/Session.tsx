@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mic, MicOff, MessageSquare, X, Send, Eye, EyeOff, Volume2, VolumeX } from "lucide-react";
+import { Mic, MicOff, MessageSquare, X, Send, Eye, EyeOff, Volume2, VolumeX, BookOpen } from "lucide-react";
 import { streamWonderChat, playWonderTTS, generateSessionSummary, type SessionSummary } from "@/lib/wonder-api";
 import { useSpeechRecognition } from "@/hooks/use-speech-recognition";
 import { useWonderVisuals } from "@/hooks/use-wonder-visuals";
@@ -346,6 +346,15 @@ const Session = () => {
           >
             {soundEnabled ? <Volume2 size={14} /> : <VolumeX size={14} />}
           </button>
+
+          <Link
+            to="/framework"
+            className="text-wonder-purple/40 hover:text-wonder-purple/70 transition-colors font-body text-xs flex items-center gap-1"
+            title="About Wonder"
+          >
+            <BookOpen size={13} />
+            <span className="hidden sm:inline">About</span>
+          </Link>
         </div>
 
         <button
