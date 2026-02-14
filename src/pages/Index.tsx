@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Settings } from "lucide-react";
 
 import portraitChild from "@/assets/portrait-child-wonder.jpg";
 import portraitElder from "@/assets/portrait-elder-joy.jpg";
@@ -137,9 +138,18 @@ const Index = () => {
             </button>
           </div>
 
-          <p className="text-muted-foreground/60 text-sm font-body mt-2">
-            No account needed. Just begin.
-          </p>
+          <div className="flex items-center gap-4 mt-2">
+            <p className="text-muted-foreground/60 text-sm font-body">
+              No account needed. Just begin.
+            </p>
+            <button
+              onClick={() => navigate("/settings")}
+              className="text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors"
+              aria-label="Settings"
+            >
+              <Settings size={18} />
+            </button>
+          </div>
         </motion.div>
       </main>
     </div>
