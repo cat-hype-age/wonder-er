@@ -226,39 +226,39 @@ const Demo = () => {
       </AnimatePresence>
 
       {/* Conversation area — tarot card style */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 md:px-6 pb-4 z-10 flex items-start justify-center">
-        <div className="max-w-xl w-full flex flex-col gap-6 py-6">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 md:px-8 pb-6 z-10 flex items-start justify-center">
+        <div className="max-w-2xl w-full flex flex-col gap-10 py-8">
           <AnimatePresence>
             {visibleBeats.map(({ sceneIdx, beatIdx }, i) => {
               const beat = SCENES[sceneIdx].beats[beatIdx];
               return (
                 <motion.div
                   key={`${sceneIdx}-${beatIdx}`}
-                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                  initial={{ opacity: 0, y: 30, scale: 0.92 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
                   className="flex justify-center"
                 >
                   {beat.role === "stage" ? (
-                    <div className="w-full max-w-md px-6 py-5 rounded-2xl border border-wonder-purple/10 bg-wonder-navy-light/30 text-center">
-                      <p className="text-wonder-purple/50 font-body text-sm md:text-base italic leading-relaxed">
+                    <div className="w-full max-w-lg px-8 py-7 rounded-2xl border border-wonder-purple/10 bg-wonder-navy-light/30 text-center">
+                      <p className="text-wonder-purple/50 font-body text-base md:text-lg italic leading-relaxed">
                         {beat.text}
                       </p>
                     </div>
                   ) : (
                     <div
-                      className={`w-full max-w-md rounded-3xl px-7 py-6 md:px-8 md:py-7 border shadow-lg ${
+                      className={`w-full max-w-lg rounded-[2rem] px-10 py-10 md:px-12 md:py-12 border shadow-xl ${
                         beat.role === "ai"
-                          ? "bg-gradient-to-br from-wonder-purple/15 via-wonder-navy-light/80 to-wonder-teal/5 border-wonder-purple/20 shadow-wonder-purple/10"
-                          : "bg-gradient-to-br from-wonder-teal/10 via-wonder-navy-light/80 to-wonder-sky/5 border-wonder-teal/20 shadow-wonder-teal/10"
+                          ? "bg-gradient-to-br from-wonder-purple/15 via-wonder-navy-light/80 to-wonder-teal/5 border-wonder-purple/20 shadow-wonder-purple/15"
+                          : "bg-gradient-to-br from-wonder-teal/10 via-wonder-navy-light/80 to-wonder-sky/5 border-wonder-teal/20 shadow-wonder-teal/15"
                       }`}
                     >
-                      <span className={`font-body text-[11px] uppercase tracking-[0.15em] block mb-3 ${
+                      <span className={`font-body text-xs uppercase tracking-[0.25em] block mb-5 ${
                         beat.role === "ai" ? "text-wonder-purple/50" : "text-wonder-teal/50"
                       }`}>
                         {beat.role === "ai" ? "✦ Wonder" : "You"}
                       </span>
-                      <p className={`font-display text-lg md:text-xl leading-relaxed ${
+                      <p className={`font-display text-xl md:text-2xl lg:text-[1.7rem] leading-[1.6] tracking-wide ${
                         beat.role === "ai" ? "text-wonder-teal/90 italic" : "text-wonder-teal"
                       }`}>
                         {beat.text}
