@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Play, Sparkles } from "lucide-react";
+import { Play, Sparkles, Presentation } from "lucide-react";
 import WonderPageBackground from "@/components/WonderPageBackground";
 import SparkleField from "@/components/SparkleField";
 import MagicButton from "@/components/MagicButton";
@@ -180,10 +180,23 @@ const Index = () => {
               Watch the demo
             </MagicButton>
             <span className="text-wonder-purple/20">·</span>
-            <p className="text-white text-sm font-body">
-              No account needed
-            </p>
+            <MagicButton
+              onClick={() => navigate("/slides")}
+              className="px-6 py-3 rounded-full bg-wonder-gold/40 border border-wonder-gold/50 text-white font-body font-semibold text-sm flex items-center gap-2 shadow-lg shadow-wonder-gold/20"
+            >
+              <Presentation size={16} />
+              Slide deck
+            </MagicButton>
           </motion.div>
+
+          <motion.p
+            className="text-white/50 text-sm font-body"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.6, duration: 0.8 }}
+          >
+            No account needed
+          </motion.p>
         </motion.div>
       </main>
     </div>
