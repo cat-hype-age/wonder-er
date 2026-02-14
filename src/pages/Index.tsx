@@ -139,9 +139,9 @@ const Index = () => {
           <div className="flex items-center gap-4 mt-2">
             <button
               onClick={() => navigate("/demo")}
-              className="text-wonder-purple/50 hover:text-wonder-purple transition-colors font-body text-sm flex items-center gap-1.5"
+              className="px-6 py-3 rounded-full bg-wonder-purple/20 border border-wonder-purple/30 text-wonder-purple font-body font-semibold text-sm flex items-center gap-2 hover:bg-wonder-purple/30 hover:border-wonder-purple/50 transition-all hover:scale-105 shadow-lg shadow-wonder-purple/10"
             >
-              <Play size={14} />
+              <Play size={16} />
               Watch the demo
             </button>
             <span className="text-wonder-purple/20">·</span>
