@@ -1,7 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Play } from "lucide-react";
+import { Play, Sparkles } from "lucide-react";
 import WonderPageBackground from "@/components/WonderPageBackground";
+import SparkleField from "@/components/SparkleField";
+import MagicButton from "@/components/MagicButton";
 
 import portraitChild from "@/assets/portrait-child-wonder.jpg";
 import portraitElder from "@/assets/portrait-elder-joy.jpg";
@@ -70,6 +72,7 @@ const Index = () => {
       </header>
 
       <WonderPageBackground />
+      <SparkleField count={40} />
 
       <main className="relative min-h-screen flex flex-col items-center justify-center z-[2]">
         {/* Repeating portrait grid behind everything */}
@@ -97,13 +100,14 @@ const Index = () => {
         {wowWords.map((w, i) => (
           <motion.span
             key={w.text}
-            className={`absolute ${wowPositions[i]} ${w.color} ${w.font} ${w.size} select-none pointer-events-none drop-shadow-[0_0_18px_currentColor]`}
+            className={`absolute ${wowPositions[i]} ${w.color} ${w.font} ${w.size} select-none pointer-events-none drop-shadow-[0_0_18px_currentColor] animate-float-gentle`}
             style={{ zIndex: 3, ["--rotate" as string]: `${(i % 2 === 0 ? 1 : -1) * (3 + i * 1.5)}deg`, transform: `rotate(var(--rotate))` }}
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: [0.3, 0.6, 0.3], scale: 1 }}
+            initial={{ opacity: 0, scale: 0, filter: "blur(12px)" }}
+            animate={{ opacity: [0.3, 0.65, 0.3], scale: 1, filter: "blur(0px)" }}
             transition={{
               opacity: { delay: w.delay + 0.6, duration: 5, repeat: Infinity, ease: "easeInOut" },
-              scale: { delay: w.delay + 0.3, duration: 0.7, ease: "backOut" },
+              scale: { delay: w.delay + 0.3, duration: 0.9, ease: "backOut" },
+              filter: { delay: w.delay + 0.3, duration: 0.8 },
             }}
           >
             {w.text}
@@ -117,38 +121,51 @@ const Index = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.8 }}
         >
-          <p className="text-wonder-teal/70 font-body text-lg md:text-xl text-center max-w-md">
+          <motion.p
+            className="text-wonder-teal/70 font-body text-lg md:text-xl text-center max-w-md"
+            initial={{ opacity: 0, filter: "blur(8px)" }}
+            animate={{ opacity: 1, filter: "blur(0px)" }}
+            transition={{ delay: 1, duration: 1 }}
+          >
             A moment of wonder is waiting for you.
-          </p>
+          </motion.p>
 
           <div className="flex flex-col sm:flex-row gap-4">
-            <button
+            <MagicButton
               onClick={() => navigate("/session?mode=reflection")}
-              className="px-8 py-4 rounded-full bg-wonder-coral text-white font-body font-semibold text-lg shadow-lg shadow-wonder-coral/20 hover:shadow-xl hover:shadow-wonder-coral/30 transition-all hover:scale-105 active:scale-[0.98]"
+              className="px-8 py-4 rounded-full bg-wonder-coral text-white font-body font-semibold text-lg shadow-lg shadow-wonder-coral/20"
             >
-              Check in with yourself
-            </button>
-            <button
+              <span className="flex items-center gap-2">
+                <Sparkles size={18} className="animate-pulse" />
+                Check in with yourself
+              </span>
+            </MagicButton>
+            <MagicButton
               onClick={() => navigate("/session?mode=partnership")}
-              className="px-8 py-4 rounded-full bg-wonder-teal text-white font-body font-semibold text-lg shadow-lg shadow-wonder-teal/20 hover:shadow-xl hover:shadow-wonder-teal/30 transition-all hover:scale-105 active:scale-[0.98]"
+              className="px-8 py-4 rounded-full bg-wonder-teal text-white font-body font-semibold text-lg shadow-lg shadow-wonder-teal/20"
             >
               Work through something
-            </button>
+            </MagicButton>
           </div>
 
-          <div className="flex items-center gap-4 mt-2">
-            <button
+          <motion.div
+            className="flex items-center gap-4 mt-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.4, duration: 0.8 }}
+          >
+            <MagicButton
               onClick={() => navigate("/demo")}
-              className="px-6 py-3 rounded-full bg-wonder-purple/50 border border-wonder-purple/60 text-white font-body font-semibold text-sm flex items-center gap-2 hover:bg-wonder-purple/65 hover:border-wonder-purple/80 transition-all hover:scale-105 shadow-lg shadow-wonder-purple/20"
+              className="px-6 py-3 rounded-full bg-wonder-purple/50 border border-wonder-purple/60 text-white font-body font-semibold text-sm flex items-center gap-2 shadow-lg shadow-wonder-purple/20"
             >
               <Play size={16} />
               Watch the demo
-            </button>
+            </MagicButton>
             <span className="text-wonder-purple/20">·</span>
             <p className="text-white text-sm font-body">
               No account needed
             </p>
-          </div>
+          </motion.div>
         </motion.div>
       </main>
     </div>
