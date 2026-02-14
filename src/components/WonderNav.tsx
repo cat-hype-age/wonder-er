@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Home, Play, Mic, Settings, BookOpen } from "lucide-react";
+import { Menu, X, Home, Play, Mic, Settings, BookOpen, Presentation } from "lucide-react";
 
 const navItems = [
   { label: "Home", path: "/", icon: Home },
   { label: "Begin Session", path: "/session?mode=reflection", icon: Mic },
   { label: "Watch Demo", path: "/demo", icon: Play },
+  { label: "Slide Deck", path: "/slides", icon: Presentation },
   { label: "About Wonder", path: "/framework", icon: BookOpen },
   { label: "Settings", path: "/settings", icon: Settings },
 ];
