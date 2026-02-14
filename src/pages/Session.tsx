@@ -32,7 +32,7 @@ const Session = () => {
   const mode = searchParams.get("mode") || "reflection";
 
   const [conversationState, setConversationState] = useState<ConversationState>("idle");
-  const [showTranscript, setShowTranscript] = useState(false);
+  const [showTranscript, setShowTranscript] = useState(true);
   const [showTextInput, setShowTextInput] = useState(false);
   const [textInput, setTextInput] = useState("");
   const [messages, setMessages] = useState<Msg[]>([]);
