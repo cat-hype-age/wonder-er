@@ -21,26 +21,11 @@ import portraitAmazed from "@/assets/portrait-man-amazed.jpg";
   Each portrait is absolutely positioned via percentages for a dense, 
   overlapping, editorial collage feel. Sizes vary for depth.
 */
-const portraits = [
-  // Large anchors
-  { src: portraitChild, alt: "Child wonder", cls: "w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 rounded-2xl rotate-[-4deg]", pos: "top-[6%] left-[2%]", z: 4, delay: 0 },
-  { src: portraitGolden, alt: "Woman looking up in golden light", cls: "w-36 h-36 sm:w-44 sm:h-44 md:w-52 md:h-52 rounded-3xl rotate-[3deg]", pos: "top-[2%] left-[28%] md:left-[22%]", z: 6, delay: 0.1 },
-  { src: portraitBlue, alt: "Man in blue-teal awe", cls: "w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 rounded-full rotate-[-2deg]", pos: "top-[4%] right-[18%] md:right-[22%]", z: 5, delay: 0.15 },
-  { src: portraitSurprise, alt: "Woman surprised", cls: "w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 rounded-2xl rotate-[5deg]", pos: "top-[3%] right-[0%]", z: 4, delay: 0.2 },
-
-  // Middle row — densest
-  { src: portraitDelight, alt: "Girl delighted", cls: "w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 rounded-full rotate-[4deg]", pos: "top-[30%] left-[0%]", z: 7, delay: 0.05 },
-  { src: portraitMan, alt: "Man in awe", cls: "w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-3xl rotate-[-6deg]", pos: "top-[28%] left-[20%] md:left-[16%]", z: 3, delay: 0.25 },
-  { src: portraitMoved, alt: "Man deeply moved", cls: "w-36 h-36 sm:w-44 sm:h-44 md:w-56 md:h-56 rounded-2xl rotate-[2deg]", pos: "top-[24%] left-[40%] md:left-[36%]", z: 8, delay: 0.08 },
-  { src: portraitElder, alt: "Elder laughing", cls: "w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 rounded-full rotate-[-3deg]", pos: "top-[30%] right-[14%] md:right-[18%]", z: 5, delay: 0.18 },
-  { src: portraitAmazed, alt: "Man amazed", cls: "w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-2xl rotate-[6deg]", pos: "top-[26%] right-[0%]", z: 6, delay: 0.12 },
-
-  // Bottom row
-  { src: portraitSerene, alt: "Elder serene", cls: "w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 rounded-3xl rotate-[-5deg]", pos: "top-[52%] left-[4%]", z: 5, delay: 0.22 },
-  { src: portraitSnow, alt: "Man seeing snow", cls: "w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-full rotate-[3deg]", pos: "top-[56%] left-[28%] md:left-[24%]", z: 4, delay: 0.3 },
-  { src: portraitWoman, alt: "Woman wondering", cls: "w-28 h-28 sm:w-36 sm:h-36 md:w-48 md:h-48 rounded-2xl rotate-[-2deg]", pos: "top-[50%] right-[22%] md:right-[26%]", z: 7, delay: 0.14 },
-  { src: portraitGratitude, alt: "Elder gratitude", cls: "w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 rounded-full rotate-[4deg]", pos: "top-[54%] right-[2%]", z: 3, delay: 0.28 },
-  { src: portraitTeen, alt: "Teen excited", cls: "w-24 h-24 sm:w-28 sm:h-28 md:w-36 md:h-36 rounded-3xl rotate-[-4deg]", pos: "top-[48%] left-[50%] md:left-[46%]", z: 2, delay: 0.35 },
+const portraitImages = [
+  portraitChild, portraitGolden, portraitBlue, portraitSurprise,
+  portraitDelight, portraitMan, portraitMoved, portraitElder,
+  portraitAmazed, portraitSerene, portraitSnow, portraitWoman,
+  portraitGratitude, portraitTeen,
 ];
 
 const wowWords = [
@@ -141,56 +126,51 @@ const Index = () => {
         }}
       />
 
-      <main className="relative min-h-screen flex flex-col z-[2]">
-        {/* Collage area — absolutely positioned overlapping portraits */}
-        <div className="flex-1 relative px-2 pt-4 md:px-8 md:pt-8 min-h-[62vh]">
-          {/* Portraits */}
-          {portraits.map((p, i) => (
-            <motion.div
-              key={p.alt}
-              className={`absolute ${p.pos}`}
-              style={{ zIndex: p.z }}
-              initial={{ opacity: 0, scale: 0.7, y: 25 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ delay: p.delay + 0.2, duration: 0.7, ease: "easeOut" }}
-            >
-              <motion.img
-                src={p.src}
-                alt={p.alt}
-                className={`${p.cls} object-cover shadow-2xl shadow-wonder-navy/60 ring-1 ring-white/10`}
-                animate={{ y: [0, i % 2 === 0 ? -5 : -8, 0] }}
-                transition={{ duration: 5 + i * 0.4, repeat: Infinity, ease: "easeInOut" }}
-              />
-            </motion.div>
-          ))}
-
-          {/* WOW words scattered over the collage */}
-          {wowWords.map((w, i) => (
-            <motion.span
-              key={w.text}
-              className={`absolute ${wowPositions[i]} ${w.color} ${w.font} ${w.size} select-none pointer-events-none drop-shadow-[0_0_18px_currentColor]`}
-              style={{ zIndex: 10, ["--rotate" as string]: `${(i % 2 === 0 ? 1 : -1) * (3 + i * 1.5)}deg`, transform: `rotate(var(--rotate))` }}
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: [0.5, 0.9, 0.5], scale: 1 }}
-              transition={{
-                opacity: { delay: w.delay + 0.6, duration: 5, repeat: Infinity, ease: "easeInOut" },
-                scale: { delay: w.delay + 0.3, duration: 0.7, ease: "backOut" },
-              }}
-            >
-              {w.text}
-            </motion.span>
-          ))}
+      <main className="relative min-h-screen flex flex-col items-center justify-center z-[2]">
+        {/* Repeating portrait grid behind everything */}
+        <div className="absolute inset-0 overflow-hidden z-0">
+          <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-7 gap-3 p-3 opacity-40">
+            {Array.from({ length: 42 }).map((_, i) => {
+              const src = portraitImages[i % portraitImages.length];
+              return (
+                <motion.div
+                  key={i}
+                  className="aspect-square rounded-2xl overflow-hidden"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: (i % 14) * 0.05 + 0.2, duration: 0.6 }}
+                >
+                  <img src={src} alt="" className="w-full h-full object-cover" />
+                </motion.div>
+              );
+            })}
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-wonder-navy/50 via-wonder-navy/65 to-wonder-navy/85" />
         </div>
 
-        {/* Bottom gradient — heavy to ground the collage */}
-        <div className="absolute bottom-0 left-0 right-0 h-72 bg-gradient-to-t from-wonder-navy via-wonder-navy/85 to-transparent pointer-events-none z-10" />
+        {/* WOW words scattered */}
+        {wowWords.map((w, i) => (
+          <motion.span
+            key={w.text}
+            className={`absolute ${wowPositions[i]} ${w.color} ${w.font} ${w.size} select-none pointer-events-none drop-shadow-[0_0_18px_currentColor]`}
+            style={{ zIndex: 3, ["--rotate" as string]: `${(i % 2 === 0 ? 1 : -1) * (3 + i * 1.5)}deg`, transform: `rotate(var(--rotate))` }}
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: [0.3, 0.6, 0.3], scale: 1 }}
+            transition={{
+              opacity: { delay: w.delay + 0.6, duration: 5, repeat: Infinity, ease: "easeInOut" },
+              scale: { delay: w.delay + 0.3, duration: 0.7, ease: "backOut" },
+            }}
+          >
+            {w.text}
+          </motion.span>
+        ))}
 
-        {/* Entry points */}
+        {/* Entry points — centered over the pattern */}
         <motion.div
           className="relative z-20 px-6 py-10 md:py-14 flex flex-col items-center gap-6"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2, duration: 0.8 }}
+          transition={{ delay: 0.8, duration: 0.8 }}
         >
           <p className="text-wonder-teal/70 font-body text-lg md:text-xl text-center max-w-md">
             A moment of wonder is waiting for you.
