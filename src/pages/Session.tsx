@@ -1,12 +1,14 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mic, MicOff, MessageSquare, X, Send, Eye, EyeOff, Volume2, VolumeX, BookOpen } from "lucide-react";
+import { Mic, MicOff, MessageSquare, X, Send, Eye, EyeOff, Volume2, VolumeX, BookOpen, Sparkles } from "lucide-react";
 import { streamWonderChat, playWonderTTS, generateSessionSummary, parseWonderImages, generateWonderImage, type SessionSummary } from "@/lib/wonder-api";
 import { useSpeechRecognition } from "@/hooks/use-speech-recognition";
 import { useWonderVisuals } from "@/hooks/use-wonder-visuals";
 import WonderBackground from "@/components/WonderBackground";
 import WonderPageBackground from "@/components/WonderPageBackground";
+import SparkleField from "@/components/SparkleField";
+import MagicButton from "@/components/MagicButton";
 import { toast } from "sonner";
 
 type ConversationState = "idle" | "listening" | "processing" | "speaking";
@@ -255,7 +257,7 @@ const Session = () => {
   return (
     <div className="min-h-screen min-h-[100dvh] bg-wonder-navy flex flex-col items-center justify-between relative overflow-hidden safe-top safe-bottom">
       <WonderPageBackground />
-      {/* Wonder background visuals */}
+      <SparkleField count={25} hues={[270, 175, 200]} />
       <WonderBackground
         currentImage={currentImage}
         previousImage={previousImage}
@@ -410,9 +412,9 @@ const Session = () => {
             <motion.div
               key={i}
               className="flex justify-center"
-              initial={{ opacity: 0, y: 20, scale: 0.92 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
+              initial={{ opacity: 0, y: 30, scale: 0.88, filter: "blur(6px)" }}
+              animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+              transition={{ duration: 0.6, ease: "easeOut", delay: 0.05 }}
             >
               <div
                 className={`w-full max-w-lg rounded-[2rem] px-10 py-10 border shadow-xl ${
@@ -458,34 +460,70 @@ const Session = () => {
         <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at 50% 45%, hsl(42 90% 58% / 0.06) 0%, hsl(350 72% 55% / 0.03) 40%, transparent 70%)' }} />
         <motion.div
           className="relative"
-          initial={{ opacity: 0, scale: 0.5 }}
+          initial={{ opacity: 0, scale: 0.3 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, ease: "easeOut" }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
         >
+          {/* Outer glow ring */}
+          <motion.div
+            className="absolute -inset-6 rounded-full pointer-events-none"
+            style={{ background: 'radial-gradient(circle, hsl(270 50% 55% / 0.15) 0%, transparent 70%)' }}
+            animate={{
+              scale: conversationState === "listening" ? [1, 1.3, 1] : conversationState === "speaking" ? [1, 1.15, 0.95, 1] : [1, 1.08, 1],
+              opacity: conversationState === "idle" ? [0.3, 0.6, 0.3] : 0.8,
+            }}
+            transition={{ duration: conversationState === "listening" ? 1.5 : 3, repeat: Infinity, ease: "easeInOut" }}
+          />
+          {/* Sparkle ring around orb */}
+          <motion.div
+            className="absolute -inset-4 pointer-events-none"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          >
+            {[0, 60, 120, 180, 240, 300].map((deg) => (
+              <motion.span
+                key={deg}
+                className="absolute w-1.5 h-1.5 rounded-full bg-wonder-purple/60"
+                style={{
+                  top: "50%",
+                  left: "50%",
+                  transform: `rotate(${deg}deg) translateY(-${140}%) translate(-50%, -50%)`,
+                }}
+                animate={{ opacity: [0.2, 0.8, 0.2], scale: [0.8, 1.2, 0.8] }}
+                transition={{ duration: 2, delay: deg / 360, repeat: Infinity, ease: "easeInOut" }}
+              />
+            ))}
+          </motion.div>
           <div
             className={`w-48 h-48 md:w-64 md:h-64 rounded-full bg-gradient-to-br from-wonder-purple/40 via-wonder-teal/30 to-wonder-coral/20 blur-xl absolute inset-0 ${orbClasses[conversationState]}`}
           />
           <div
             className={`w-48 h-48 md:w-64 md:h-64 rounded-full bg-gradient-to-br from-wonder-purple/60 via-wonder-teal/40 to-wonder-sky/30 backdrop-blur-sm relative z-10 flex items-center justify-center ${orbClasses[conversationState]}`}
           >
-            <div className="w-32 h-32 md:w-44 md:h-44 rounded-full bg-gradient-to-br from-wonder-purple/80 via-wonder-teal/60 to-wonder-coral/30" />
+            <motion.div
+              className="w-32 h-32 md:w-44 md:h-44 rounded-full bg-gradient-to-br from-wonder-purple/80 via-wonder-teal/60 to-wonder-coral/30"
+              animate={{ rotate: [0, 360] }}
+              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+              style={{ backgroundSize: "200% 200%" }}
+            />
           </div>
         </motion.div>
 
         <motion.p
-          className="text-wonder-purple/70 font-body text-sm tracking-wide"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          className="text-wonder-purple/70 font-body text-sm tracking-wide flex items-center gap-2"
+          initial={{ opacity: 0, filter: "blur(4px)" }}
+          animate={{ opacity: 1, filter: "blur(0px)" }}
           transition={{ delay: 1 }}
         >
+          {conversationState === "listening" && <Sparkles size={14} className="animate-pulse text-wonder-coral/70" />}
           {stateLabels[conversationState]}
         </motion.p>
 
         {conversationState === "processing" && messages.length === 0 && (
           <motion.p
             className="text-wonder-teal/80 font-display text-xl md:text-2xl text-center max-w-md px-4"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 10, filter: "blur(6px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ delay: 0.3 }}
           >
             Finding a wonder seed for you...
@@ -502,9 +540,8 @@ const Session = () => {
       >
         {/* Mic button with label — primary action */}
         <div className="flex flex-col items-center gap-2">
-          <button
+          <MagicButton
             onClick={handleMicToggle}
-            disabled={conversationState === "processing" || conversationState === "speaking"}
             className={`w-16 h-16 rounded-full flex items-center justify-center transition-all shadow-lg disabled:opacity-40 ${
               isListening
                 ? "bg-wonder-coral text-wonder-navy scale-110"
@@ -512,7 +549,7 @@ const Session = () => {
             }`}
           >
             {isListening ? <MicOff size={24} /> : <Mic size={24} />}
-          </button>
+          </MagicButton>
           <span className="text-wonder-purple/40 font-body text-xs">
             {isListening ? "Tap to stop" : "Tap to talk"}
           </span>
