@@ -230,7 +230,7 @@ Be warm, precise, and specific to what was actually discussed. No generic platit
       headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
     });
   } catch (e) {
-    console.error("wonder-chat error:", e);
+    console.error("wonder-chat error");
     return new Response(
       JSON.stringify({ error: "An error occurred. Please try again." }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
