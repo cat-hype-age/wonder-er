@@ -13,6 +13,26 @@ serve(async (req) => {
 
   try {
     const { text, voiceId } = await req.json();
+
+    if (!text || typeof text !== "string") {
+      return new Response(
+        JSON.stringify({ error: "Invalid text input" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    if (text.length > 5000) {
+      return new Response(
+        JSON.stringify({ error: "Text too long (max 5000 characters)" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    if (voiceId !== undefined && (typeof voiceId !== "string" || voiceId.length > 100)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid voiceId" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const ELEVENLABS_API_KEY = Deno.env.get("ELEVENLABS_API_KEY");
     if (!ELEVENLABS_API_KEY) throw new Error("ELEVENLABS_API_KEY is not configured");
 
