@@ -37,6 +37,22 @@ serve(async (req) => {
 
   try {
     const { messages } = await req.json();
+
+    if (!Array.isArray(messages) || messages.length === 0 || messages.length > 100) {
+      return new Response(
+        JSON.stringify({ error: "Invalid messages" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    for (const msg of messages) {
+      if (!msg || typeof msg.content !== "string" || typeof msg.role !== "string" || msg.content.length > 10000) {
+        return new Response(
+          JSON.stringify({ error: "Invalid message format" }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
@@ -67,7 +83,7 @@ serve(async (req) => {
 
     if (!promptResponse.ok) {
       const t = await promptResponse.text();
-      console.error("Prompt generation error:", promptResponse.status, t);
+      console.error("Prompt generation error:", { status: promptResponse.status, hasBody: !!t });
       throw new Error("Visual generation failed");
     }
 
@@ -79,8 +95,8 @@ serve(async (req) => {
     if (!jsonMatch) throw new Error("Invalid prompt format");
     const { imagePrompt, soundscapePrompt } = JSON.parse(jsonMatch[0]);
 
-    console.log("Generated image prompt:", imagePrompt);
-    console.log("Generated soundscape prompt:", soundscapePrompt);
+    console.log("Generated image prompt", { length: imagePrompt?.length ?? 0 });
+    console.log("Generated soundscape prompt", { length: soundscapePrompt?.length ?? 0 });
 
     // Step 2: Generate image using Gemini Flash Image model
     const imageResponse = await fetch(
@@ -105,7 +121,7 @@ serve(async (req) => {
 
     if (!imageResponse.ok) {
       const t = await imageResponse.text();
-      console.error("Visual image generation error:", imageResponse.status, t);
+      console.error("Visual image generation error:", { status: imageResponse.status, hasBody: !!t });
       // Return just the soundscape prompt if image fails
       return new Response(
         JSON.stringify({ imageBase64: null, soundscapePrompt }),
@@ -149,7 +165,7 @@ serve(async (req) => {
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (e) {
-    console.error("wonder-visuals error:", e);
+    console.error("wonder-visuals error");
     return new Response(
       JSON.stringify({
         error: "An error occurred. Please try again.",

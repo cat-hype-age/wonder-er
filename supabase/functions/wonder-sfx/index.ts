@@ -13,10 +13,19 @@ serve(async (req) => {
 
   try {
     const { prompt, duration } = await req.json();
+
+    if (!prompt || typeof prompt !== "string" || prompt.length > 2000) {
+      return new Response(
+        JSON.stringify({ error: "Invalid or too long prompt" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    const safeDuration = typeof duration === "number" && duration > 0 && duration <= 22 ? duration : 8;
+
     const ELEVENLABS_API_KEY = Deno.env.get("ELEVENLABS_API_KEY");
     if (!ELEVENLABS_API_KEY) throw new Error("ELEVENLABS_API_KEY is not configured");
 
-    console.log("Generating SFX for prompt:", prompt);
+    console.log("Generating SFX", { promptLength: prompt.length });
 
     const response = await fetch(
       "https://api.elevenlabs.io/v1/sound-generation",
@@ -28,7 +37,7 @@ serve(async (req) => {
         },
         body: JSON.stringify({
           text: prompt,
-          duration_seconds: duration || 8,
+          duration_seconds: safeDuration,
           prompt_influence: 0.4,
         }),
       }
@@ -36,7 +45,7 @@ serve(async (req) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("ElevenLabs SFX error:", response.status, errorText);
+      console.error("ElevenLabs SFX error:", { status: response.status, hasBody: !!errorText });
       return new Response(
         JSON.stringify({ error: "Sound generation failed. Please try again." }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }

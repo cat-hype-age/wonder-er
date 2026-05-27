@@ -13,12 +13,17 @@ serve(async (req) => {
 
   try {
     const { prompt } = await req.json();
-    if (!prompt) throw new Error("Missing prompt");
+    if (!prompt || typeof prompt !== "string" || prompt.length > 2000) {
+      return new Response(
+        JSON.stringify({ error: "Invalid or too long prompt" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    console.log("Generating wonder image:", prompt);
+    console.log("Generating wonder image", { promptLength: prompt.length });
 
     const imageResponse = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
@@ -55,7 +60,7 @@ serve(async (req) => {
         );
       }
       const t = await imageResponse.text();
-      console.error("Image generation error:", imageResponse.status, t);
+      console.error("Image generation error:", { status: imageResponse.status, hasBody: !!t });
       throw new Error("Image generation failed");
     }
 
@@ -88,7 +93,7 @@ serve(async (req) => {
     }
 
     if (!imageUrl) {
-      console.error("No image in response:", JSON.stringify(imageData).slice(0, 500));
+      console.error("No image in response");
       throw new Error("No image generated");
     }
 
@@ -97,7 +102,7 @@ serve(async (req) => {
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (e) {
-    console.error("wonder-image error:", e);
+    console.error("wonder-image error");
     return new Response(
       JSON.stringify({ error: "An error occurred. Please try again.", imageUrl: null }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }

@@ -11,3 +11,7 @@ verify_jwt = false
 
 [functions.wonder-sfx]
 verify_jwt = false
+
+[functions.wonder-image]
+verify_jwt = false
+
