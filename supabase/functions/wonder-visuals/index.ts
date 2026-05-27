@@ -83,7 +83,7 @@ serve(async (req) => {
 
     if (!promptResponse.ok) {
       const t = await promptResponse.text();
-      console.error("Prompt generation error:", promptResponse.status, t);
+      console.error("Prompt generation error:", { status: promptResponse.status, hasBody: !!t });
       throw new Error("Visual generation failed");
     }
 
