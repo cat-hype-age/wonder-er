@@ -62,7 +62,7 @@ serve(async (req) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("ElevenLabs error:", response.status, errorText);
+      console.error("ElevenLabs error:", { status: response.status, hasBody: !!errorText });
       return new Response(
         JSON.stringify({ error: "Voice generation failed. Please try again." }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
