@@ -93,7 +93,7 @@ serve(async (req) => {
     }
 
     if (!imageUrl) {
-      console.error("No image in response:", JSON.stringify(imageData).slice(0, 500));
+      console.error("No image in response");
       throw new Error("No image generated");
     }
 
