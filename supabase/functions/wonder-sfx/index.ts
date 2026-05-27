@@ -37,7 +37,7 @@ serve(async (req) => {
         },
         body: JSON.stringify({
           text: prompt,
-          duration_seconds: duration || 8,
+          duration_seconds: safeDuration,
           prompt_influence: 0.4,
         }),
       }
