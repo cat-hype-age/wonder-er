@@ -121,7 +121,7 @@ serve(async (req) => {
 
     if (!imageResponse.ok) {
       const t = await imageResponse.text();
-      console.error("Visual image generation error:", imageResponse.status, t);
+      console.error("Visual image generation error:", { status: imageResponse.status, hasBody: !!t });
       // Return just the soundscape prompt if image fails
       return new Response(
         JSON.stringify({ imageBase64: null, soundscapePrompt }),
