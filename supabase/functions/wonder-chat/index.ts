@@ -133,6 +133,40 @@ serve(async (req) => {
 
   try {
     const { messages, mode, generateSummary } = await req.json();
+
+    if (!Array.isArray(messages) || messages.length === 0) {
+      return new Response(
+        JSON.stringify({ error: "Invalid messages" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    if (messages.length > 100) {
+      return new Response(
+        JSON.stringify({ error: "Message history too long" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    for (const msg of messages) {
+      if (!msg || typeof msg.content !== "string" || typeof msg.role !== "string") {
+        return new Response(
+          JSON.stringify({ error: "Invalid message format" }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      if (msg.content.length > 10000) {
+        return new Response(
+          JSON.stringify({ error: "Message too long" }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    }
+    if (mode !== undefined && (typeof mode !== "string" || mode.length > 100)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid mode" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
