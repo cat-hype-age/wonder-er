@@ -211,7 +211,7 @@ Be warm, precise, and specific to what was actually discussed. No generic platit
         );
       }
       const t = await response.text();
-      console.error("AI gateway error:", response.status, t);
+      console.error("AI gateway error:", { status: response.status, hasBody: !!t });
       return new Response(
         JSON.stringify({ error: "AI gateway error" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
