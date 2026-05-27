@@ -60,7 +60,7 @@ serve(async (req) => {
         );
       }
       const t = await imageResponse.text();
-      console.error("Image generation error:", imageResponse.status, t);
+      console.error("Image generation error:", { status: imageResponse.status, hasBody: !!t });
       throw new Error("Image generation failed");
     }
 
