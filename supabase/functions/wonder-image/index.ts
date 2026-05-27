@@ -102,7 +102,7 @@ serve(async (req) => {
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (e) {
-    console.error("wonder-image error:", e);
+    console.error("wonder-image error");
     return new Response(
       JSON.stringify({ error: "An error occurred. Please try again.", imageUrl: null }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
