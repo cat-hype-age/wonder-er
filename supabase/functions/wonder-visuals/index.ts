@@ -95,8 +95,8 @@ serve(async (req) => {
     if (!jsonMatch) throw new Error("Invalid prompt format");
     const { imagePrompt, soundscapePrompt } = JSON.parse(jsonMatch[0]);
 
-    console.log("Generated image prompt:", imagePrompt);
-    console.log("Generated soundscape prompt:", soundscapePrompt);
+    console.log("Generated image prompt", { length: imagePrompt?.length ?? 0 });
+    console.log("Generated soundscape prompt", { length: soundscapePrompt?.length ?? 0 });
 
     // Step 2: Generate image using Gemini Flash Image model
     const imageResponse = await fetch(
