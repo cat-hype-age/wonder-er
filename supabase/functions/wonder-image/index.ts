@@ -13,12 +13,17 @@ serve(async (req) => {
 
   try {
     const { prompt } = await req.json();
-    if (!prompt) throw new Error("Missing prompt");
+    if (!prompt || typeof prompt !== "string" || prompt.length > 2000) {
+      return new Response(
+        JSON.stringify({ error: "Invalid or too long prompt" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    console.log("Generating wonder image:", prompt);
+    console.log("Generating wonder image", { promptLength: prompt.length });
 
     const imageResponse = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
